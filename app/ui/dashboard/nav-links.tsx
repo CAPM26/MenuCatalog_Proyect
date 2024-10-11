@@ -1,9 +1,10 @@
 'use client';
 import {
-  UserGroupIcon,
+  BuildingOfficeIcon,
   HomeIcon,
   DocumentDuplicateIcon,
   ArchiveBoxIcon,
+  DocumentTextIcon,
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -20,13 +21,17 @@ const links = [
     href: '/dashboard/invoices',
     icon: DocumentDuplicateIcon,
   },
-  { name: 'Customers', 
+  { name: 'establishments', 
     href: '/dashboard/customers', 
-    icon: UserGroupIcon 
+    icon: BuildingOfficeIcon 
   },
   { name: 'Products', 
     href: '/dashboard/products', 
     icon: ArchiveBoxIcon 
+  },
+  { name: 'Menus', 
+    href: '/dashboard/menus', 
+    icon: DocumentTextIcon 
   },
 ];
 
