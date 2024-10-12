@@ -56,7 +56,7 @@ export default async function ProductsTable({
                   Cost Price
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Unity Cost
+                  Unit Cost
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
                   Category
