@@ -6,3 +6,13 @@ WHERE pr.presentation_description = 'botella'
 AND sc.subcategory_description = 'ABARROTES'
 AND c.category_description = 'ABARROTES'
 
+SELECT p.product_description, pr.presentation_description, sc.subcategory_description, c.category_description, pcs.price_costprice, pcs.price_unitprice, pcs.price_startvaliditydate, u.name
+FROM products p
+JOIN presentation pr ON pr.presentation_id = p.presentation_id_reference
+JOIN subcategory sc ON sc.subcategory_id = p.subcategory_id_reference
+JOIN category c ON c.category_id = sc.category_id_reference
+JOIN prices pcs ON p.product_id = pcs.product_id_reference
+JOIN users u ON u.id = pcs.user_id_reference
+WHERE pr.presentation_description = 'botella'
+AND sc.subcategory_description = 'ABARROTES'
+AND c.category_description = 'ABARROTES'

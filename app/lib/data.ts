@@ -4,6 +4,7 @@ import {
   CustomersTableType,
   InvoiceForm,
   InvoicesTable,
+  ProductsTable,
   LatestInvoiceRaw,
   Revenue,
 } from './definitions';
@@ -213,5 +214,91 @@ export async function fetchFilteredCustomers(query: string) {
   } catch (err) {
     console.error('Database Error:', err);
     throw new Error('Failed to fetch customer table.');
+  }
+}
+
+export async function fetchFilteredProducts(
+  query: string,
+  currentPage: number,
+) {
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+
+  try {
+    const products = await sql<ProductsTable>`SELECT 
+  p.product_description, 
+  pr.presentation_description, 
+  sc.subcategory_description, 
+  c.category_description, 
+  pcs.price_costprice, 
+  pcs.price_unitprice, 
+  pcs.price_startvaliditydate, 
+  u.name
+  FROM products p
+  JOIN presentation pr ON pr.presentation_id = p.presentation_id_reference
+  JOIN subcategory sc ON sc.subcategory_id = p.subcategory_id_reference
+  JOIN category c ON c.category_id = sc.category_id_reference
+  JOIN prices pcs ON p.product_id = pcs.product_id_reference
+  JOIN users u ON u.id = pcs.user_id_reference
+  WHERE 
+    pr.presentation_description ILIKE ${`%${query}%`} OR
+    sc.subcategory_description ILIKE ${`%${query}%`} OR
+    c.category_description ILIKE ${`%${query}%`} OR
+    p.product_description ILIKE ${`%${query}%`} OR
+    u.name ILIKE ${`%${query}%`}
+  ORDER BY p.product_description ASC
+  LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset};
+
+    `;
+
+    return products.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch products.');
+  }
+}
+
+export async function fetchProductsPages(query: string) {
+  try {
+    const count = await sql`SELECT COUNT(*)
+    FROM invoices
+    JOIN customers ON invoices.customer_id = customers.id
+    WHERE
+      customers.name ILIKE ${`%${query}%`} OR
+      customers.email ILIKE ${`%${query}%`} OR
+      invoices.amount::text ILIKE ${`%${query}%`} OR
+      invoices.date::text ILIKE ${`%${query}%`} OR
+      invoices.status ILIKE ${`%${query}%`}
+  `;
+
+    const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
+    return totalPages;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch total number of products.');
+  }
+}
+
+export async function fetchProductById(id: string) {
+  try {
+    const data = await sql<InvoiceForm>`
+      SELECT
+        invoices.id,
+        invoices.customer_id,
+        invoices.amount,
+        invoices.status
+      FROM invoices
+      WHERE invoices.id = ${id};
+    `;
+
+    const invoice = data.rows.map((invoice) => ({
+      ...invoice,
+      // Convert amount from cents to dollars
+      amount: invoice.amount / 100,
+    }));
+
+    return invoice[0];
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch product.');
   }
 }

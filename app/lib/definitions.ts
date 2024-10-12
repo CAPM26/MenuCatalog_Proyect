@@ -26,6 +26,16 @@ export type Invoice = {
   status: 'pending' | 'paid';
 };
 
+export type Product = {
+  id: string;
+  customer_id: string;
+  amount: number;
+  date: string;
+  // In TypeScript, this is called a string union type.
+  // It means that the "status" property can only be one of the two strings: 'pending' or 'paid'.
+  status: 'pending' | 'paid';
+};
+
 export type Revenue = {
   month: string;
   revenue: number;
@@ -53,6 +63,22 @@ export type InvoicesTable = {
   date: string;
   amount: number;
   status: 'pending' | 'paid';
+};
+
+export type ProductsTable = {
+  product_id: string;
+  presentation_id: string;
+  subcategory_id: string;
+  price_id: string;
+  user_id: string;
+
+  presentation_description: string;
+  product_description: string;
+  price_costprice: number;
+  price_unitprice: number;
+  validitydate: string;
+  category_description: string;
+  subcategory_description: string;
 };
 
 export type CustomersTableType = {
@@ -85,4 +111,19 @@ export type InvoiceForm = {
   customer_id: string;
   amount: number;
   status: 'pending' | 'paid';
+};
+
+
+export type ProductForm = {
+  product_id: string;
+  presentation_id: string;
+  subcategory_id: string;
+  price_id: string;
+
+  presentation_description: string;
+  product_description: string;
+  price_costprice: number;
+  price_unitprice: number;
+  category_description: string;
+  subcategory_description: string;
 };
