@@ -231,14 +231,14 @@ export async function fetchFilteredProducts(
   c.category_description, 
   pcs.price_costprice, 
   pcs.price_unitprice, 
-  pcs.price_startvaliditydate, 
+  pcs.price_validitydate, 
   u.name
   FROM products p
-  JOIN presentation pr ON pr.presentation_id = p.presentation_id_reference
-  JOIN subcategory sc ON sc.subcategory_id = p.subcategory_id_reference
-  JOIN category c ON c.category_id = sc.category_id_reference
-  JOIN prices pcs ON p.product_id = pcs.product_id_reference
-  JOIN users u ON u.id = pcs.user_id_reference
+  JOIN presentation pr ON pr.presentation_id = p.presentation_id_ref
+  JOIN subcategory sc ON sc.subcategory_id = p.subcategory_id_ref
+  JOIN category c ON c.category_id = sc.category_id_ref
+  JOIN prices pcs ON p.product_id = pcs.product_id_ref
+  JOIN users u ON u.id = pcs.user_id_ref
   WHERE 
     pr.presentation_description ILIKE ${`%${query}%`} OR
     sc.subcategory_description ILIKE ${`%${query}%`} OR

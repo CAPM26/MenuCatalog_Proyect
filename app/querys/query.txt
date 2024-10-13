@@ -16,3 +16,31 @@ JOIN users u ON u.id = pcs.user_id_reference
 WHERE pr.presentation_description = 'botella'
 AND sc.subcategory_description = 'ABARROTES'
 AND c.category_description = 'ABARROTES'
+
+-- Insertar productos en menulistproducts
+INSERT INTO menulistproducts (menu_id_ref, product_id_ref, menulistproduct_quantity)
+VALUES (
+    (SELECT menu_id FROM menus WHERE menu_description = 'menu 1'),
+    (SELECT product_id FROM products WHERE product_description = 'aceite'),
+    2
+);
+
+-- Actualizar el costo total del menú
+UPDATE menus
+SET menu_totalcost = (
+    SELECT SUM(pcs.price_unitprice * mlp.menulistproduct_quantity)
+    FROM menulistproducts mlp
+    JOIN products p ON p.product_id = mlp.product_id_ref
+    JOIN prices pcs ON p.product_id = pcs.product_id_ref
+    WHERE mlp.menu_id_ref = menus.menu_id
+);
+
+-- actualizar desde menu_sideorder
+UPDATE menus
+SET menu_totalcost = menu_totalcost + (
+    SELECT SUM(pcs.price_unitprice)
+    FROM menu_sideorder mso
+    JOIN products p ON p.product_id = mso.product_id_ref
+    JOIN prices pcs ON p.product_id = pcs.product_id_ref
+    WHERE mso.menu_id_ref = menus.menu_id
+);

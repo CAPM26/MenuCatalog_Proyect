@@ -70,7 +70,6 @@ export type ProductsTable = {
   presentation_id: string;
   subcategory_id: string;
   price_id: string;
-  user_id: string;
 
   presentation_description: string;
   product_description: string;
