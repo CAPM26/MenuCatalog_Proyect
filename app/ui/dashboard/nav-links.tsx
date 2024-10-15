@@ -33,6 +33,7 @@ const links = [
     href: '/dashboard/menus', 
     icon: DocumentTextIcon 
   },
+ 
 ];
 
 export default function NavLinks() {

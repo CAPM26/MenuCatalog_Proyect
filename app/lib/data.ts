@@ -7,6 +7,7 @@ import {
   InvoicesTable,
   ProductsTable,
   LatestInvoiceRaw,
+  ClientTable,
   Revenue,
 } from './definitions';
 import { formatCurrency } from './utils';
@@ -216,6 +217,35 @@ export async function fetchFilteredCustomers(query: string) {
     throw new Error('Failed to fetch customer table.');
   }
 }
+
+export async function fetchFilteredClients(
+  query: string,
+  currentPage: number,
+) {
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+  try {
+    const clients = await sql<ClientTable>`
+      SELECT 
+        client_id, client_name, client_phone, client_direction
+      FROM clients
+      WHERE
+        client_name ILIKE ${`%${query}%`} OR
+        client_phone ILIKE ${`%${query}%`} OR
+        client_direction ILIKE ${`%${query}%`}
+      ORDER BY client_name ASC
+      LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset};
+    `;
+
+    return clients.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch clients.');
+  }
+}
+
+
+
+
 export async function fetchFilteredProducts(
   query: string,
   currentPage: number,

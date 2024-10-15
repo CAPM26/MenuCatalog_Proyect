@@ -15,10 +15,7 @@ export type Customer = {
   email: string;
   image_url: string;
 
-  client_id: string;
-  client_name: string;
-  client_phone: string;
-  client_direction: string;
+  
 };
 
 export type Invoice = {
@@ -68,6 +65,13 @@ export type InvoicesTable = {
   date: string;
   amount: number;
   status: 'pending' | 'paid';
+};
+
+export type ClientTable = {
+client_id: string;
+client_name: string;
+client_phone: string;
+client_direction: string;
 };
 
 export type ProductsTable = {
