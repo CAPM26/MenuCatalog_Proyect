@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
+import { ClientTable } from './definitions';
  
 const FormSchema = z.object({
   id: z.string(),
@@ -83,6 +84,7 @@ export async function createInvoice(prevState: State, formData: FormData) {
   redirect('/dashboard/invoices');
 }
 
+
 export async function updateInvoice(
   id: string,
   prevState: State,
@@ -118,6 +120,68 @@ export async function updateInvoice(
   revalidatePath('/dashboard/invoices');
   redirect('/dashboard/invoices');
 }
+
+
+
+
+const UpdateClient = z.object({
+  client_id: z.string().min(1, 'Client ID is required'), // Asegúrate de tener un campo para el ID del cliente.
+  client_name: z.string().min(1, 'Client name is required'),
+  client_phone: z.string().optional(), // Puedes hacer que el teléfono sea opcional.
+  client_direction: z.string().optional(), // Puedes hacer que la dirección sea opcional.
+});
+
+export async function updateCustomer(
+  id: string, // ID del cliente que deseas actualizar
+  prevState: any, // Reemplaza 'any' con el tipo adecuado para tu estado anterior
+  formData: FormData,
+) {
+  // Valida los campos del formulario
+  const validatedFields = UpdateClient.safeParse({
+    client_id: id,
+    client_name: formData.get('client_name'),
+    client_phone: formData.get('client_phone'),
+    client_direction: formData.get('client_direction'),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Update Client.',
+    };
+  }
+
+  const { client_id, client_name, client_phone, client_direction } = validatedFields.data;
+
+  try {
+    // Actualiza los datos del cliente en la base de datos.
+    await sql`
+      UPDATE clients
+      SET client_name = ${client_name}, client_phone = ${client_phone}, client_direction = ${client_direction}
+      WHERE client_id = ${client_id}
+    `;
+    return { message: 'Cliente actualizado con éxito' }; // Asegúrate de devolver un mensaje de éxito.
+  } catch (error) {
+    console.error(error);
+    return { message: 'Database Error: Failed to Update Client.' }; // Devuelve un mensaje de error en caso de fallo.
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 export async function deleteInvoice(id: string) {
   // throw new Error('Failed to Delete Invoice');

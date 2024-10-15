@@ -1,3 +1,5 @@
+// app/api/customers/route.ts
+
 import { NextResponse } from 'next/server';
 import { ClientTable } from '@/app/lib/definitions';
 
@@ -6,18 +8,13 @@ let clients: ClientTable[] = [
   { client_id: '2', client_name: 'Jane Smith', client_phone: '0987654321', client_direction: '456 Elm St' },
 ];
 
-export async function PUT(req: Request, { params }: { params: { name: string } }) {
-  const { name } = params; 
-  const body: ClientTable = await req.json();
+export async function POST(req: Request) {
+  const body: Omit<ClientTable, 'client_id'> = await req.json(); // Omite client_id
+  const newClient: ClientTable = {
+    client_id: (clients.length + 1).toString(), // Asigna un nuevo ID
+    ...body,
+  };
 
-  console.log('Updating client:', name); // Registro para depuración
-  console.log('Request body:', body); // Registro para depuración
-
-  const clientIndex = clients.findIndex(client => client.client_name === name);
-  if (clientIndex === -1) {
-    return NextResponse.json({ message: 'Client not found' }, { status: 404 });
-  }
-
-  clients[clientIndex] = { ...clients[clientIndex], ...body };
-  return NextResponse.json({ message: 'Client updated successfully' });
+  clients.push(newClient); // Agrega el nuevo cliente a la lista
+  return NextResponse.json({ message: 'Client created successfully', client: newClient });
 }

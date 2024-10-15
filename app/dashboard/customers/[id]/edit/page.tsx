@@ -12,7 +12,7 @@ export default async function Page({ params }: { params: { id: string } }) {
 
   return (
     <main>
-      <h1>Edit Client</h1>
+      <h1>Edit Establishment</h1>
       <Form client={client} />
     </main>
   );
