@@ -33,6 +33,16 @@ export type State = {
   message?: string | null;
 };
  
+export async function deleteClient(id: string) {
+  try {
+    await sql`DELETE FROM clients WHERE client_id = ${id}`; // Ajusta la consulta según tu base de datos
+    revalidatePath('/dashboard/customers'); // Revalida la página de clientes
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to delete client');
+  }
+}
+
 export async function createInvoice(prevState: State, formData: FormData) {
   // Validate form using Zod
   const validatedFields = CreateInvoice.safeParse({

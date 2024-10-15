@@ -1,4 +1,4 @@
-import { UpdateInvoice, DeleteInvoice } from '@/app/ui/invoices/buttons'; // Asegúrate de tener los botones adecuados importados
+import { UpdateInvoice, DeleteInvoice } from '@/app/ui/customers/buttons'; // Asegúrate de que las rutas sean correctas
 import { fetchFilteredClients } from '@/app/lib/data';
 
 export default async function ClientsTable({
