@@ -85,6 +85,85 @@ export async function createInvoice(prevState: State, formData: FormData) {
 }
 
 
+// Validación con Zod
+const CreateClientSchema = z.object({
+  client_name: z.string().min(1, 'Client name is required'),
+  client_phone: z.string().optional(),
+  client_direction: z.string().optional(),
+});
+
+// Función para crear cliente
+export async function createCustomer(formData: FormData) {
+  // Valida los campos del formulario
+  const validatedFields = CreateClientSchema.safeParse({
+    client_name: formData.get('client_name'),
+    client_phone: formData.get('client_phone'),
+    client_direction: formData.get('client_direction'),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Create Client.',
+    };
+  }
+
+  const { client_name, client_phone, client_direction } = validatedFields.data;
+
+  // Generar el ID automáticamente, puede ser un hash o UUID
+  const client_id = generateClientId(client_name); // Función para generar el ID
+
+  try {
+    // Inserción en la base de datos
+    await sql`
+      INSERT INTO clients (client_id, client_name, client_phone, client_direction)
+      VALUES (${client_id}, ${client_name}, ${client_phone}, ${client_direction})
+    `;
+  } catch {
+    return {
+      message: 'Database Error: Failed to Create Client.',
+    };
+  }
+
+  return {
+    message: 'Client Created Successfully.',
+  };
+}
+
+// Función auxiliar para generar el ID del cliente
+function generateClientId(name: string): string {
+  return name.toLowerCase().replace(/\s+/g, '-') + '-' + Date.now();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 export async function updateInvoice(
   id: string,
   prevState: State,
