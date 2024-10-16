@@ -116,8 +116,8 @@ export async function createCustomer(formData: FormData) {
   try {
     // Inserción en la base de datos
     await sql`
-      INSERT INTO clients (client_id, client_name, client_phone, client_direction)
-      VALUES (${client_id}, ${client_name}, ${client_phone}, ${client_direction})
+      INSERT INTO clients (client_name, client_phone, client_direction)
+    VALUES (${client_name}, ${client_phone}, ${client_direction})
     `;
   } catch {
     return {
