@@ -1,15 +1,19 @@
 import { sql } from '@vercel/postgres';
+
+
 import {
+  Customer,
   CustomerField,
   CustomersTableType,
   InvoiceForm,
   InvoicesTable,
   ProductsTable,
   LatestInvoiceRaw,
+  ClientTable,
   Revenue,
 } from './definitions';
 import { formatCurrency } from './utils';
-
+export const db = sql; // Puedes usar esta exportación en tu data.ts
 export async function fetchRevenue() {
   try {
     // Artificially delay a response for demo purposes.
@@ -183,7 +187,6 @@ export async function fetchCustomers() {
     throw new Error('Failed to fetch all customers.');
   }
 }
-
 export async function fetchFilteredCustomers(query: string) {
   try {
     const data = await sql<CustomersTableType>`
@@ -216,6 +219,34 @@ export async function fetchFilteredCustomers(query: string) {
     throw new Error('Failed to fetch customer table.');
   }
 }
+
+export async function fetchFilteredClients(
+  query: string,
+  currentPage: number,
+) {
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+  try {
+    const clients = await sql<ClientTable>`
+      SELECT 
+        client_id, client_name, client_phone, client_direction
+      FROM clients
+      WHERE
+        client_name ILIKE ${`%${query}%`} OR
+        client_phone ILIKE ${`%${query}%`} OR
+        client_direction ILIKE ${`%${query}%`}
+      ORDER BY client_name ASC
+      LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset};
+    `;
+
+    return clients.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch clients.');
+  }
+}
+
+
+
 
 export async function fetchFilteredProducts(
   query: string,
@@ -301,4 +332,27 @@ export async function fetchProductById(id: string) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch product.');
   }
+}
+
+export async function fetchClientById(id: string): Promise<ClientTable | null> {
+  const result = await sql`SELECT * FROM clients WHERE client_id = ${id}`;
+
+  if (result.rows.length === 0) {
+      return null; // Si no se encuentra el cliente, retorna null
+  }
+
+  // Asumiendo que el resultado tiene la forma esperada
+  const client: ClientTable = result.rows[0] as ClientTable; // Asegúrate de que sea del tipo correcto
+
+  return client;
+}
+
+// app/lib/data.ts
+
+export async function fetchCustomerById(id: string): Promise<ClientTable | null> {
+  const response = await fetch(`/api/customers/${id}`);
+  if (!response.ok) {
+    return null;
+  }
+  return response.json();
 }
