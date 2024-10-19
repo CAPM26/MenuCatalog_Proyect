@@ -306,55 +306,54 @@ export async function fetchProductById(id: string) {
 
 //estructurar mejor el query para que funcione
 export async function fetchFilteredProductReport(query: string) {
-  //try {
-  //  const menuReport = await sql<MenuTable>`SELECT 
-  //    p.product_description, 
-  //    pr.presentation_description, 
-  //    sc.subcategory_description, 
-  //    c.category_description, 
-  //    pcs.price_costprice, 
-  //    pcs.price_unitprice, 
-  //    pcs.price_startvaliditydate, 
-  //    u.name
-  //    FROM products p
-  //    JOIN presentation pr ON pr.presentation_id = p.presentation_id_reference
-  //    JOIN subcategory sc ON sc.subcategory_id = p.subcategory_id_reference
-  //    JOIN category c ON c.category_id = sc.category_id_reference
-  //    JOIN prices pcs ON p.product_id = pcs.product_id_reference
-  //    JOIN users u ON u.id = pcs.user_id_reference
-  //    WHERE 
-  //      pr.presentation_description ILIKE ${`%${query}%`} OR
-  //      sc.subcategory_description ILIKE ${`%${query}%`} OR
-  //      c.category_description ILIKE ${`%${query}%`} OR
-  //      p.product_description ILIKE ${`%${query}%`} OR
-  //      u.name ILIKE ${`%${query}%`}
-  //    ORDER BY p.product_description ASC;
-  //  `;
-//
-  //  return menuReport.rows;
-  //} catch (error) {
-  //  console.error('Database Error:', error);
-  //  throw new Error('Failed to fetch product report.');
-  //}
+  try {
+    const menuReport = await sql<MenuTable>`SELECT 
+  p.product_description, 
+  pr.presentation_description, 
+  sc.subcategory_description, 
+  c.category_description, 
+  pcs.price_unitprice / 100 AS unitprice, 
+  ((mp.menulistproduct_quantity * pcs.price_unitprice)/100) AS total_price,
+  pcs.price_validitydate, 
+  u.name AS added_by_user, 
+  m.menu_description 
+FROM products p
+JOIN presentation pr ON pr.presentation_id = p.presentation_id_ref
+JOIN subcategory sc ON sc.subcategory_id = p.subcategory_id_ref
+JOIN category c ON c.category_id = sc.category_id_ref
+JOIN prices pcs ON p.product_id = pcs.product_id_ref
+JOIN users u ON u.id = pcs.user_id_ref
+JOIN menulistproducts mp ON mp.product_id_ref = p.product_id 
+JOIN menus m ON m.menu_id = mp.menu_id_ref
+WHERE 
+    m.menu_description = 'Menu 1'
+ORDER BY p.product_description ASC;
+    `;
+
+    return menuReport.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch product report.');
+  }
 }
 
 export async function fetchMenuPages(query: string) {
-  //try {
-    //const count = await sql`SELECT COUNT(*)
-    //FROM menus
-    //WHERE
-    //  menus.name ILIKE ${`%${query}%`} OR
-    //  menus.description ILIKE ${`%${query}%`} OR
-    //  menus.price::text ILIKE ${`%${query}%`} OR
-    //  menus.category ILIKE ${`%${query}%`}
-    //`;
-//
-    //const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
-    return 8;
-  //} catch (error) {
-    //console.error('Database Error:', error);
-    //throw new Error('Failed to fetch total number of menu items.');
-    //return 2;
+ // try {
+ //   const count = await sql`SELECT COUNT(*)
+ //   FROM menus
+ //   WHERE
+ //     menus_id ILIKE ${`%${query}%`} OR
+ //     menus_servings ILIKE ${`%${query}%`} OR
+ //     menus_creationdate::text ILIKE ${`%${query}%`} OR
+ //     menus_descripcion ILIKE ${`%${query}%`}
+ //   `;
+////
+ //   const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
+ //   return totalPages;
+ // } catch (error) {
+ //   console.error('Database Error:', error);
+ //   throw new Error('Failed to fetch total number of menu items.');
+ //  
   //}
 }
 

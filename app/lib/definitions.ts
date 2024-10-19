@@ -159,6 +159,6 @@ export type MenuTable = {
   category_description: string;
   price_costprice: number;
   price_unitprice: number;
-  price_startvaliditydate: string;
+  price_validitydate: string;
   user_name: string;
 };

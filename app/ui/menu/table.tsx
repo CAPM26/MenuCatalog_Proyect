@@ -24,13 +24,7 @@ export default async function MenuTable({
                 <div className="flex items-center justify-between border-b pb-4">
                   <div>
                     <div className="mb-2 flex items-center">
-                      <Image
-                        src="/images/product-placeholder.png"
-                        className="mr-2 rounded-full"
-                        width={28}
-                        height={28}
-                        alt={`${item.product_description}'s image`}
-                      />
+                      
                       <p>{item.product_description}</p>
                     </div>
                     <p className="text-sm text-gray-500">{item.category_description}</p>
@@ -41,7 +35,7 @@ export default async function MenuTable({
                     <p className="text-xl font-medium">
                       {formatCurrency(item.price_unitprice)}
                     </p>
-                    <p>{formatDateToLocal(item.price_startvaliditydate)}</p>
+                    <p>{formatDateToLocal(item.price_validitydate)}</p>
                   </div>
                 </div>
               </div>
@@ -83,18 +77,7 @@ export default async function MenuTable({
                   key={item.product_description}
                   className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
                 >
-                  <td className="whitespace-nowrap py-3 pl-6 pr-3">
-                    <div className="flex items-center gap-3">
-                      <Image
-                        src="/images/product-placeholder.png"
-                        className="rounded-full"
-                        width={28}
-                        height={28}
-                        alt={`${item.product_description}'s image`}
-                      />
-                      <p>{item.product_description}</p>
-                    </div>
-                  </td>
+                 
                   <td className="whitespace-nowrap px-3 py-3">
                     {item.presentation_description}
                   </td>
@@ -111,7 +94,7 @@ export default async function MenuTable({
                     {formatCurrency(item.price_unitprice)}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {formatDateToLocal(item.price_startvaliditydate)}
+                    {/*{formatDateToLocal(item.price_validitydate)}*/}
                   </td>
                 </tr>
               ))}
