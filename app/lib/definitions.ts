@@ -149,7 +149,6 @@ export type CategoryField = {
 export type SubcategoryField = {
   subcategory_id: string;
   subcategory_description: string;
-<<<<<<< HEAD
 };
 
 //Apartado de objetos del menu 
@@ -185,12 +184,4 @@ export type MenuTable = {
   price_unitprice: number;
   price_validitydate: string;
   user_name: string;
-=======
-  category_id_ref: string;
-};
-
-export type UserField = {
-  id: string;
-  name: string;
->>>>>>> origin/development
 };
