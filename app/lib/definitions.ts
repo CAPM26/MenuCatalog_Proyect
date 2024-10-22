@@ -141,3 +141,38 @@ export type ProductForm = {
   category_description: string;
   subcategory_description: string;
 };
+
+//Apartado de objetos del menu 
+export type Menu = {
+  menu_id: string;
+  menu_name: string;
+  menu_description: string;
+  menu_price: number;
+  menu_available: boolean; // Para indicar si el menú está disponible o no
+  category_description: string; // Categoría a la que pertenece el menú
+};
+
+export type MenuListProduct = {
+  menu_id: string;
+  product_id: string;
+  product_description: string;
+  product_quantity: number;
+};
+
+export type MenuSideOrder = {
+  sideorder_id: string;
+  menu_id: string;
+  sideorder_description: string;
+  sideorder_price: number;
+};
+
+export type MenuTable = {
+  product_description: string;
+  presentation_description: string;
+  subcategory_description: string;
+  category_description: string;
+  price_costprice: number;
+  price_unitprice: number;
+  price_validitydate: string;
+  user_name: string;
+};

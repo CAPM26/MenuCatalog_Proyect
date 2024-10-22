@@ -11,6 +11,7 @@ import {
   LatestInvoiceRaw,
   ClientTable,
   Revenue,
+  MenuTable,
 } from './definitions';
 import { formatCurrency } from './utils';
 export const db = sql; // Puedes usar esta exportación en tu data.ts
@@ -332,27 +333,4 @@ export async function fetchProductById(id: string) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch product.');
   }
-}
-
-export async function fetchClientById(id: string): Promise<ClientTable | null> {
-  const result = await sql`SELECT * FROM clients WHERE client_id = ${id}`;
-
-  if (result.rows.length === 0) {
-      return null; // Si no se encuentra el cliente, retorna null
-  }
-
-  // Asumiendo que el resultado tiene la forma esperada
-  const client: ClientTable = result.rows[0] as ClientTable; // Asegúrate de que sea del tipo correcto
-
-  return client;
-}
-
-// app/lib/data.ts
-
-export async function fetchCustomerById(id: string): Promise<ClientTable | null> {
-  const response = await fetch(`/api/customers/${id}`);
-  if (!response.ok) {
-    return null;
-  }
-  return response.json();
 }
