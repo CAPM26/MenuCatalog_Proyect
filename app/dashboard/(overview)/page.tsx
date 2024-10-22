@@ -19,16 +19,18 @@ export default async function Page() {
     // totalPaidInvoices,
     // totalPendingInvoices,
   } = await fetchCardData();
- 
+
+  const today = new Date();
+  const formattedDate = today.toLocaleDateString('es-ES');
   return (
     <main>
       <div className="w-full h-auto p-4 bg-purple-400">
-        <h1 className={`${lusitana.className} mb-4 text-xl md:text-2xl text-center text-white font-size:80px`}>
+        <h1 className={`${lusitana.className} mb-4 text-xl md:text-2xl text-center text-white`}>
           Menú del Día
         </h1>
-        <h1 className={`${lusitana.className} mb-4 text-xl md:text-2xl text-center text-white font-size:80px`}>
-          Hoy: 
-        </h1>
+        <p className={`${lusitana.className} mb-4 text-xl md:text-2xl text-center text-white`}>
+          Hoy: {formattedDate}
+        </p>
       </div>
       
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
