@@ -1,4 +1,4 @@
-import { AcademicCapIcon } from '@heroicons/react/24/outline';
+import { AcademicCapIcon, BookOpenIcon } from '@heroicons/react/24/outline';
 import { lusitana } from '@/app/ui/fonts';
 
 export default function AcmeLogo() {
@@ -6,8 +6,8 @@ export default function AcmeLogo() {
     <div
       className={`${lusitana.className} flex flex-row items-center leading-none text-white`}
     >
-      <AcademicCapIcon className="h-14 w-14" />
-      <p className="text-[26px]">Grupo #1</p>
+      <BookOpenIcon  className="h-14 w-14" />
+      <p className="text-[26px]">Catalogo</p>
     </div>
   );
 }

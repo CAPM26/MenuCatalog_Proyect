@@ -17,16 +17,18 @@ export default function SideNav() {
       </Link>
       <div className="flex grow flex-row justify-between space-x-2 md:flex-col md:space-x-0 md:space-y-2">
         <NavLinks />
-        <div className="hidden h-auto w-full grow rounded-md bg-gray-50 md:block"></div>
+        <div className="hidden h-auto w-full grow rounded-md bg-dimgray-500 md:block relative">
         <form action={async () => {
             'use server';
             await signOut();
           }}>
-          <button className="flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3">
-            <PowerIcon className="w-6" />
-            <div className="hidden md:block">Sign Out</div>
+          <button className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex h-[64px] w-[190px] items-center justify-center gap-2 rounded-md bg-dimgray-500 p-2 text-sm font-medium hover:bg-blue-600 md:flex-none md:justify-start md:p-4 md:px-5 text-white">
+            <PowerIcon className="w-8" />
+            <div className="hidden md:block text-base font-medium md:p-3 md:px-4 ">Sign Out</div>
           </button>
         </form>
+        </div>
+        
       </div>
     </div>
   );
