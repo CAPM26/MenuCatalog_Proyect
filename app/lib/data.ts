@@ -6,25 +6,23 @@ import {
   CustomerField,
   CustomersTableType,
   InvoiceForm,
+  ProductForm,
   InvoicesTable,
   ProductsTable,
   LatestInvoiceRaw,
   ClientTable,
   Revenue,
+  PresentationField,
+  CategoryField,
+  SubcategoryField,
+  UserField,
 } from './definitions';
 import { formatCurrency } from './utils';
 export const db = sql; // Puedes usar esta exportación en tu data.ts
 export async function fetchRevenue() {
   try {
-    // Artificially delay a response for demo purposes.
-    // Don't do this in production :)
-
-    // console.log('Fetching revenue data...');
-    // await new Promise((resolve) => setTimeout(resolve, 3000));
 
     const data = await sql<Revenue>`SELECT * FROM revenue`;
-
-    console.log('Data fetch completed after 3 seconds.');
 
     return data.rows;
   } catch (error) {
@@ -255,14 +253,14 @@ export async function fetchFilteredProducts(
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
   try {
-    const products = await sql<ProductsTable>`SELECT 
+    const products = await sql<ProductsTable>`SELECT
+  p.product_id, 
   p.product_description, 
   pr.presentation_description, 
   sc.subcategory_description, 
   c.category_description, 
   pcs.price_costprice, 
   pcs.price_unitprice, 
-  pcs.price_validitydate, 
   u.name
   FROM products p
   JOIN presentation pr ON pr.presentation_id = p.presentation_id_ref
@@ -291,14 +289,18 @@ export async function fetchFilteredProducts(
 export async function fetchProductsPages(query: string) {
   try {
     const count = await sql`SELECT COUNT(*)
-    FROM invoices
-    JOIN customers ON invoices.customer_id = customers.id
+    FROM products p
+    JOIN presentation pr ON pr.presentation_id = p.presentation_id_ref
+    JOIN subcategory sc ON sc.subcategory_id = p.subcategory_id_ref
+    JOIN category c ON c.category_id = sc.category_id_ref
+    JOIN prices pcs ON pcs.product_id_ref = p.product_id
+    JOIN users u ON u.id = pcs.user_id_ref
     WHERE
-      customers.name ILIKE ${`%${query}%`} OR
-      customers.email ILIKE ${`%${query}%`} OR
-      invoices.amount::text ILIKE ${`%${query}%`} OR
-      invoices.date::text ILIKE ${`%${query}%`} OR
-      invoices.status ILIKE ${`%${query}%`}
+      p.product_description ILIKE ${`%${query}%`} OR
+      pr.presentation_description ILIKE ${`%${query}%`} OR
+      sc.subcategory_description ILIKE ${`%${query}%`} OR
+      c.category_description ILIKE ${`%${query}%`} OR
+      u.name ILIKE ${`%${query}%`}
   `;
 
     const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
@@ -309,30 +311,43 @@ export async function fetchProductsPages(query: string) {
   }
 }
 
+
 export async function fetchProductById(id: string) {
   try {
-    const data = await sql<InvoiceForm>`
+    const data = await sql<ProductForm>`
       SELECT
-        invoices.id,
-        invoices.customer_id,
-        invoices.amount,
-        invoices.status
-      FROM invoices
-      WHERE invoices.id = ${id};
+        p.product_id,
+        pr.presentation_id,
+        c.category_id, 
+        sc.subcategory_id, 
+        u.id,
+        p.product_description,  
+        pcs.price_costprice, 
+        pcs.price_unitprice 
+      FROM products p
+      JOIN presentation pr ON pr.presentation_id = p.presentation_id_ref
+      JOIN subcategory sc ON sc.subcategory_id = p.subcategory_id_ref
+      JOIN category c ON c.category_id = sc.category_id_ref
+      JOIN prices pcs ON p.product_id = pcs.product_id_ref
+      JOIN users u ON u.id = pcs.user_id_ref
+      WHERE p.product_id = ${id};
     `;
 
-    const invoice = data.rows.map((invoice) => ({
-      ...invoice,
-      // Convert amount from cents to dollars
-      amount: invoice.amount / 100,
+    console.log('Data fetched from database:', data); 
+    const product = data.rows.map((product) => ({
+      ...product,
+      // Convert cost price and unit price from cents to dollars
+      price_costprice: product.price_costprice / 100,
+      price_unitprice: product.price_unitprice / 100,
     }));
 
-    return invoice[0];
+    return product[0];
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch product.');
   }
 }
+
 
 export async function fetchClientById(id: string): Promise<ClientTable | null> {
   const result = await sql`SELECT * FROM clients WHERE client_id = ${id}`;
@@ -355,4 +370,77 @@ export async function fetchCustomerById(id: string): Promise<ClientTable | null>
     return null;
   }
   return response.json();
+}
+
+export async function fetchPresentations() {
+  try {
+    const data = await sql<PresentationField>`
+      SELECT
+        presentation_id,
+        presentation_description
+      FROM presentation
+      ORDER BY presentation_description ASC
+    `;
+
+    const presentations = data.rows;
+    return presentations;
+  } catch (err) {
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch all presentations.');
+  }
+}
+
+export async function fetchCategories() {
+  try {
+    const data = await sql<CategoryField>`
+      SELECT
+        category_id,
+        category_description
+      FROM category
+      ORDER BY category_description ASC
+    `;
+
+    const categories = data.rows;
+    return categories;
+  } catch (err) {
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch all categories.');
+  }
+}
+
+export async function fetchSubcategories() {
+  try {
+    const data = await sql<SubcategoryField>`
+      SELECT
+        subcategory_id,
+        subcategory_description,
+        category_id_ref
+      FROM subcategory
+      ORDER BY subcategory_description ASC
+    `;
+
+    const subcategories = data.rows;
+    return subcategories;
+  } catch (err) {
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch all subcategories.');
+  }
+}
+
+export async function fetchUsers() {
+  try {
+    const data = await sql<UserField>`
+      SELECT
+        id,
+        name
+      FROM users
+      ORDER BY name ASC
+    `;
+
+    const users = data.rows;
+    return users;
+  } catch (err) {
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch all users.');
+  }
 }

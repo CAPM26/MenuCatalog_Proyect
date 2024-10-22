@@ -6,7 +6,6 @@ import { z } from 'zod';
 import { sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { ClientTable } from './definitions';
  
 const FormSchema = z.object({
   id: z.string(),
@@ -174,6 +173,8 @@ export async function updateInvoice(
     amount: formData.get('amount'),
     status: formData.get('status'),
   });
+
+  console.log(validatedFields);
  
   if (!validatedFields.success) {
     return {
@@ -274,6 +275,108 @@ export async function deleteInvoice(id: string) {
   
 }
 
+// Define el esquema de validación usando Zod
+const FormProductSchema = z.object({
+  product_id: z.string(),
+  presentation_id: z.string({
+    invalid_type_error: 'Please select a presentation.',
+  }),
+  category_id: z.string({
+    invalid_type_error: 'Please select a category.',
+  }),
+  subcategory_id:z.string({
+    invalid_type_error: 'Please select a subcategory.',
+  }),
+  user_id: z.string({
+    invalid_type_error: 'Please select a user.',
+  }),
+  product_description: z.string({
+    invalid_type_error: 'Please enter a valid description',
+  }),
+  price_costprice: z.coerce
+  .number()
+  .gt(0, { message: 'Please enter a valid cost price.' }),
+  price_unitprice: z.coerce
+  .number()
+  .gt(0, { message: 'Please enter a valid unit price.' }),
+});
+
+// Omitir el ID del producto para crear y actualizar
+const CreateProduct = FormProductSchema.omit({ product_id: true });
+const UpdateProduct = FormProductSchema.omit({ product_id: true });
+
+// Tipo para manejar el estado de la operación
+export type ProductState = {
+  errors?: {
+    presentation_id?: string[];
+    category_id?: string[];
+    subcategory_id?: string[];
+    user_id?: string[];
+    product_description?: string[];
+    price_costprice?: string[];
+    price_unitprice?: string[];
+  };
+  message?: string | null;
+};
+
+// Función para crear un nuevo producto
+export async function createProduct(prevState: ProductState, formData: FormData) {
+  // Validar el formulario utilizando Zod
+  const validatedFields = CreateProduct.safeParse({
+    presentation_id: formData.get('presentation_id'),
+    category_id: formData.get('category_id'),
+    subcategory_id: formData.get('subcategory_id'),
+    user_id: formData.get('user_id'),
+    product_description: formData.get('product_description'),
+    price_costprice: formData.get('price_costprice'),
+    price_unitprice: formData.get('price_unitprice'),
+  });
+
+  // Si la validación del formulario falla, devuelve los errores
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Create Product.',
+    };
+  }
+
+  // Preparar datos para la inserción en la base de datos
+  const { presentation_id, subcategory_id, price_costprice, price_unitprice, product_description, user_id } = validatedFields.data;
+
+  // Inserción en la base de datos usando una transacción
+  try {
+    await sql`
+      WITH new_product AS (
+        INSERT INTO products (product_description, presentation_id_ref, subcategory_id_ref)
+        VALUES (
+          UPPER(${product_description}),
+          ${presentation_id},
+          ${subcategory_id}
+        )
+        RETURNING product_id
+      )
+      INSERT INTO prices (product_id_ref, price_costprice, price_unitprice, price_validitydate, user_id_ref)
+      VALUES (
+        (SELECT product_id FROM new_product),
+        ${price_costprice * 100},
+        ${price_unitprice * 100},
+        NOW(),
+        (SELECT id FROM users WHERE id = ${user_id})
+      );
+    `;
+  } catch (error) {
+    console.error('Database Error:', error);
+    return {
+      message: 'Database Error: Failed to Create Product.',
+    };
+  }
+
+  // Revalidar la caché para la página de productos y redirigir al usuario
+  revalidatePath('/dashboard/products');
+  redirect('/dashboard/products');
+}
+
+
 export async function authenticate(
   prevState: string | undefined,
   formData: FormData,
@@ -292,3 +395,91 @@ export async function authenticate(
     throw error;
   }
 }
+
+// Función para actualizar un producto
+export async function updateProduct(
+  id: string,
+  prevState: ProductState,
+  formData: FormData,
+) {
+  // Mostrar los datos que se están recibiendo desde el formData
+  console.log("Datos recibidos desde el FormData:");
+  for (let [key, value] of formData.entries()) {
+    console.log(`${key}: ${value}`);
+  }
+
+  // Validar el formulario usando Zod
+  const validatedFields = UpdateProduct.safeParse({
+    presentation_id: formData.get('presentation_id'),
+    category_id: formData.get('category_id'),
+    subcategory_id: formData.get('subcategory_id'),
+    user_id: formData.get('user_id'),
+    product_description: formData.get('product_description'),
+    price_costprice: formData.get('price_costprice'),
+    price_unitprice: formData.get('price_unitprice'),
+  });
+
+  // Si la validación del formulario falla, devuelve los errores
+  if (!validatedFields.success) {
+    console.error("Errores de validación:", validatedFields.error.flatten().fieldErrors);
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Update Product.',
+    };
+  }
+
+  // Preparar datos para la actualización
+  const { presentation_id, price_costprice, price_unitprice, user_id, product_description, subcategory_id } = validatedFields.data;
+
+  try {
+    // Actualizar producto y precios en la base de datos
+    await sql`
+      WITH updated_product AS (
+        UPDATE products
+        SET 
+          product_description = UPPER(${product_description}),
+          presentation_id_ref = (SELECT presentation_id FROM presentation WHERE presentation_id = ${presentation_id}),
+          subcategory_id_ref = (SELECT subcategory_id 
+                                FROM subcategory 
+                                JOIN category ON category.category_id = subcategory.category_id_ref
+                                WHERE subcategory.subcategory_id = ${subcategory_id})
+        WHERE product_id = ${id}
+        RETURNING product_id
+      )
+      UPDATE prices
+      SET 
+        price_costprice = ${price_costprice * 100},
+        price_unitprice = ${price_unitprice * 100},
+        price_validitydate = NOW(),
+        user_id_ref = (SELECT id FROM users WHERE id = ${user_id})
+      WHERE product_id_ref = (SELECT product_id FROM updated_product);
+    `;
+  } catch (error) {
+    console.error('Database Error:', error);
+    return { message: 'Database Error: Failed to Update Product.' };
+  }
+
+  // Revalidar la caché para la página de productos y redirigir al usuario
+  revalidatePath('/dashboard/products');
+  redirect('/dashboard/products');
+}
+
+
+export async function deleteProduct(id: string) {
+  try {
+    // Ejecutar la consulta SQL para borrar el producto
+    await sql`DELETE FROM products WHERE product_id = ${id}`;
+
+    // Revalidar la caché de la página de productos
+    revalidatePath('/dashboard/products');
+
+    // Retornar mensaje de éxito
+    return { message: 'Deleted Product.' };
+  } catch (error) {
+    console.error('Database Error:', error);
+
+    // Retornar mensaje de error en caso de falla
+    return { message: 'Database Error: Failed to Delete Product.' };
+  }
+}
+
