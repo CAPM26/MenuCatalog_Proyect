@@ -22,9 +22,15 @@ export default async function Page() {
  
   return (
     <main>
-      <h1 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
-        Menú del Día
-      </h1>
+      <div className="w-full h-auto p-4 bg-purple-400">
+        <h1 className={`${lusitana.className} mb-4 text-xl md:text-2xl text-center text-white font-size:80px`}>
+          Menú del Día
+        </h1>
+        <h1 className={`${lusitana.className} mb-4 text-xl md:text-2xl text-center text-white font-size:80px`}>
+          Hoy: 
+        </h1>
+      </div>
+      
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
       <Suspense fallback={<CardsSkeleton />}>
           <CardWrapper />
