@@ -157,8 +157,9 @@ export type MenuTable = {
   presentation_description: string;
   subcategory_description: string;
   category_description: string;
-  price_costprice: number;
-  price_unitprice: number;
+  total_price: string;
+  unitprice: string;
+  menulistproduct_quantity: number;
   price_validitydate: string;
   user_name: string;
 };

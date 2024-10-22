@@ -312,6 +312,7 @@ export async function fetchFilteredProductReport(query: string) {
   pr.presentation_description, 
   sc.subcategory_description, 
   c.category_description, 
+  mp.menulistproduct_quantity,
   pcs.price_unitprice / 100 AS unitprice, 
   ((mp.menulistproduct_quantity * pcs.price_unitprice)/100) AS total_price,
   pcs.price_validitydate, 
@@ -326,7 +327,7 @@ JOIN users u ON u.id = pcs.user_id_ref
 JOIN menulistproducts mp ON mp.product_id_ref = p.product_id 
 JOIN menus m ON m.menu_id = mp.menu_id_ref
 WHERE 
-    m.menu_description = 'Menu 1'
+    m.menu_description ILIKE ${`%${query}%`}
 ORDER BY p.product_description ASC;
     `;
 
