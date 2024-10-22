@@ -24,20 +24,16 @@ export default async function Page() {
   const formattedDate = today.toLocaleDateString('es-ES');
   return (
     <main>
-      <div className="w-full h-auto p-4 bg-purple-400">
-        <h1 className={`${lusitana.className} mb-4 text-xl md:text-2xl text-center text-white`}>
+      <div className="w-full h-auto p-4 bg-purple-500">
+        <h1 className={`${lusitana.className} mb-2 text-3xl font-bold text-center text-white`}>
           Menú del Día
         </h1>
-        <p className={`${lusitana.className} mb-4 text-xl md:text-2xl text-center text-white`}>
+        <p className={`${lusitana.className} text-3xl  text-center text-white font-bold`}>
           Hoy: {formattedDate}
         </p>
       </div>
       
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-      <Suspense fallback={<CardsSkeleton />}>
-          <CardWrapper />
-        </Suspense>
-      </div>
+      
       <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
       <Suspense fallback={<RevenueChartSkeleton />}>
           <RevenueChart />

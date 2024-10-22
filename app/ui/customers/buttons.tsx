@@ -1,7 +1,7 @@
 // app/ui/customers/buttons.tsx
 'use client'; // Asegúrate de incluir esto al principio del archivo
 
-import { PencilIcon, TrashIcon,PlusIcon } from '@heroicons/react/24/outline';
+import { PencilIcon, TrashIcon,PlusIcon,MinusIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { deleteClient } from '@/app/lib/actions'; // Asegúrate de que este archivo existe
 import Modal from '@/app/ui/modal'; // Asegúrate de importar el componente Modal
@@ -49,7 +49,7 @@ export function UpdateInvoice({ id }: { id: string }) {
           className="rounded-md border p-2 hover:bg-gray-100"
         >
           <span className="sr-only">Delete</span>
-          <TrashIcon className="w-4" />
+          <MinusIcon className="w-4" />
         </button>
   
         <Modal

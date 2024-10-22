@@ -21,7 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className} antialiased`}>{children}
-      <footer className='py-10 flex justify-center items-center'>
+      <footer className='py-10 flex justify-center items-center bg-dimgray-500 text-white '>
           Hecho con ❤️ por el grupo #1 de desarrollo web de 8vo ciclo UMG jutiapa 
         </footer>
       </body>
