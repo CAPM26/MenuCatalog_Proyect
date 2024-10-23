@@ -134,6 +134,7 @@ export type ProductForm = {
   product_description: string;
   price_costprice: number;
   price_unitprice: number;
+  presentation_description: string;
 };
 
 export type PresentationField = {
@@ -149,7 +150,6 @@ export type CategoryField = {
 export type SubcategoryField = {
   subcategory_id: string;
   subcategory_description: string;
-<<<<<<< HEAD
 };
 
 //Apartado de objetos del menu 
@@ -187,12 +187,10 @@ export type MenuTable = {
   price_validitydate: string;
   user_name: string;
   menu_id: string;
-=======
   category_id_ref: string;
 };
 
 export type UserField = {
   id: string;
   name: string;
->>>>>>> 282b9fd01e59e3865ed255f7708aed0dfff377e5
 };

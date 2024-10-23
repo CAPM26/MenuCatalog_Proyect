@@ -12,14 +12,12 @@ import {
   LatestInvoiceRaw,
   ClientTable,
   Revenue,
-<<<<<<< HEAD
   MenuTable,
-=======
   PresentationField,
   CategoryField,
   SubcategoryField,
   UserField,
->>>>>>> 282b9fd01e59e3865ed255f7708aed0dfff377e5
+  
 } from './definitions';
 import { formatCurrency } from './utils';
 export const db = sql; // Puedes usar esta exportación en tu data.ts
@@ -352,7 +350,6 @@ export async function fetchProductById(id: string) {
   }
 }
 
-<<<<<<< HEAD
 //estructurar mejor el query para que funcione
 export async function fetchFilteredProductReport(query: string) {
   try {
@@ -393,7 +390,6 @@ export async function fetchMenuPages(query: string) {
 }
 
 
-=======
 
 export async function fetchClientById(id: string): Promise<ClientTable | null> {
   const result = await sql`SELECT * FROM clients WHERE client_id = ${id}`;
@@ -490,4 +486,5 @@ export async function fetchUsers() {
     throw new Error('Failed to fetch all users.');
   }
 }
->>>>>>> 282b9fd01e59e3865ed255f7708aed0dfff377e5
+
+

@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import Pagination from '@/app/ui/menu/pagination';
 import Search from '@/app/ui/search';
 import MenuTable from '@/app/ui/menu/table';
@@ -44,8 +43,3 @@ export default async function Page({
     </div>
   );
 }
-=======
-export default function Page() {
-    return <p>Menus dfsdfPage</p>;
-  }
->>>>>>> 282b9fd01e59e3865ed255f7708aed0dfff377e5

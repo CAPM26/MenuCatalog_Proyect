@@ -1,7 +1,10 @@
 import Image from 'next/image';
 import { fetchFilteredProductReport } from '@/app/lib/data';
 import { formatCurrency, formatDateToLocal } from '@/app/lib/utils';
-import {UpdateMenu, DeleteMenu, CreateMenu} from '@/app/ui/menu/buttons';
+import {
+  //UpdateMenu, 
+  //DeleteMenu, 
+  CreateMenu} from '@/app/ui/menu/buttons';
 
 export default async function MenuTable({
   query,
@@ -107,7 +110,7 @@ export default async function MenuTable({
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                       <div className="flex justify-end gap-3">
-                        <UpdateMenu id={item.menu_id} />
+                        {/*<UpdateMenu id={item.menu_id} />
                         {/*<DeleteMenu id={item.menu_id} />*/}
                       </div>
                     </td>
