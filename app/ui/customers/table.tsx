@@ -44,7 +44,7 @@ export default async function ClientsTable({
                     <td className="whitespace-nowrap py-3 pl-6 pr-3">
                       <div className="flex justify-end gap-3">
                         <UpdateInvoice id={client.client_id} />
-                        <DeleteInvoice id={client.client_id} />
+                        {/* <DeleteInvoice id={client.client_id} /> */}
                       </div>
                     </td>
                   </tr>
