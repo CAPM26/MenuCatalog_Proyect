@@ -8,7 +8,7 @@ export default async function LatestInvoices() { // Remove props
   const latestInvoices = await fetchLatestInvoices();
   return (
     <div className="flex w-full flex-col md:col-span-4">
-      <h2 className={`${lusitana.className} mb-4 text-xl md:text-3xl font-bold text-center ` }>
+      <h2 className={`${lusitana.className} mb-4 text-xl md:text-3xl  text-center p-5 font-bold ` }>
         Lista de Ingredientes
       </h2>
       <div className="flex grow flex-col justify-between rounded-xl bg-gray-50 p-4">

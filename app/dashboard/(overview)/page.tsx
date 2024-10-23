@@ -4,13 +4,13 @@ import RevenueChart from '@/app/ui/dashboard/revenue-chart';
 import LatestInvoices from '@/app/ui/dashboard/latest-invoices';
 import { lusitana } from '@/app/ui/fonts';
 import { fetchCardData } from '@/app/lib/data'; // remove fetchRevenue
-import { useState, Suspense } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { RevenueChartSkeleton,
          LatestInvoicesSkeleton,
          CardsSkeleton,
        } from '@/app/ui/skeletons';
 import { fetchFilteredClients } from '@/app/lib/data';
- 
+
 export default async function Page() {
   // const revenue = await fetchRevenue();
   // const latestInvoices = await fetchLatestInvoices();
@@ -20,6 +20,7 @@ export default async function Page() {
     // totalPaidInvoices,
     // totalPendingInvoices,
   } = await fetchCardData();
+  
 
 
   const today = new Date();
@@ -35,25 +36,32 @@ export default async function Page() {
         </p>
       </div>
 
-      <div className='p-2 justify-center'> 
-        <label className='block mb-2 text-3xl font-bold text-center'>Selecciona el establecimiento:</label>
+      <div className='p-5  flex items-center justify-center'> 
+        <label className=' mr-4  block mb-2 text-2xl  text-center font-bold'>Selecciona el establecimiento:  </label>
+        <div className="flex justify-center">
+          <select className="border border-gray-300 rounded text-1xl">
+            <option value="establecimiento1">Establecimiento 1</option>
+            <option value="establecimiento2">Establecimiento 2</option>
+          </select>
+        </div>
       </div>
       
 
-      <div className='p-2 justify-center'> 
-        <label className='block mb-2 text-3xl font-bold text-center'>Selecciona un menú: </label>
-      </div>
-
-      <div className="p-6">
+      <div className='p-1 flex items-center justify-center'> 
+        <label className='mr-4 text-2xl  text-center font-bold'>Selecciona un menú: </label>
+        <select className="border border-gray-300 rounded  text-1xl mr-6">
+          <option value="menu1">Menú 1</option>
+          <option value="menu2">Menú 2</option>
+        </select>
         <button
-          // onClick={handleViewMenu}
           className="px-4 py-2 bg-purple-500 text-white font-bold rounded hover:bg-purple-400"
         >
           Ver menú
         </button>
       </div>
-      
-      <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8 justify-center">
+
+     
+      <div className="p-2 flex items-center justify-center">
         <Suspense fallback={<LatestInvoicesSkeleton />}>
           <LatestInvoices />
         </Suspense>

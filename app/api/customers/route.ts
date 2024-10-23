@@ -8,6 +8,10 @@ let clients: ClientTable[] = [
   { client_id: '2', client_name: 'Jane Smith', client_phone: '0987654321', client_direction: '456 Elm St' },
 ];
 
+export async function GET() {
+  return NextResponse.json(clients);
+}
+
 export async function POST(req: Request) {
   const body: Omit<ClientTable, 'client_id'> = await req.json(); // Omite client_id
   const newClient: ClientTable = {
