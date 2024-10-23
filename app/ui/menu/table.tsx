@@ -1,6 +1,10 @@
 import Image from 'next/image';
 import { fetchFilteredProductReport } from '@/app/lib/data';
 import { formatCurrency, formatDateToLocal } from '@/app/lib/utils';
+import {
+  //UpdateMenu, 
+  //DeleteMenu, 
+  CreateMenu} from '@/app/ui/menu/buttons';
 
 export default async function MenuTable({
   query,
@@ -33,7 +37,7 @@ export default async function MenuTable({
                 <div className="flex w-full items-center justify-between pt-4">
                   <div>
                     <p className="text-xl font-medium">
-                      {formatCurrency(item.price_unitprice)}
+                      {item.unitprice}
                     </p>
                     <p>{formatDateToLocal(item.price_validitydate)}</p>
                   </div>
@@ -58,10 +62,13 @@ export default async function MenuTable({
                   Category
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Cost Price
+                  Quantity
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
                   Unit Price
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Total Price
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
                   Validity Date
@@ -77,7 +84,9 @@ export default async function MenuTable({
                   key={item.product_description}
                   className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
                 >
-                 
+                  <td className="whitespace-nowrap px-3 py-3">
+                    {item.product_description}
+                  </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     {item.presentation_description}
                   </td>
@@ -88,14 +97,23 @@ export default async function MenuTable({
                     {item.category_description}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {formatCurrency(item.price_costprice)}
+                    {item.menulistproduct_quantity}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {formatCurrency(item.price_unitprice)}
+                    {"Q"+item.unitprice}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {/*{formatDateToLocal(item.price_validitydate)}*/}
+                    {"Q"+item.total_price}
                   </td>
+                  <td className="whitespace-nowrap px-3 py-3">
+                    {formatDateToLocal(item.price_validitydate)}
+                  </td>
+                  <td className="whitespace-nowrap py-3 pl-6 pr-3">
+                      <div className="flex justify-end gap-3">
+                        {/*<UpdateMenu id={item.menu_id} />
+                        {/*<DeleteMenu id={item.menu_id} />*/}
+                      </div>
+                    </td>
                 </tr>
               ))}
             </tbody>

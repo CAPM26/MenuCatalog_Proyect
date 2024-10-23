@@ -1,4 +1,5 @@
 import Pagination from '@/app/ui/invoices/pagination';
+import MenuPagination from '@/app/ui/menu/pagination'; 
 import Search from '@/app/ui/search';
 import Table from '@/app/ui/products/table'; /////////////////////////////////////////////////////////
 import { CreateInvoice } from '@/app/ui/invoices/buttons';
@@ -43,3 +44,4 @@ export default async function Page({
     </div>
   );
 }
+

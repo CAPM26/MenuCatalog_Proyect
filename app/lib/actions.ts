@@ -483,3 +483,53 @@ export async function deleteProduct(id: string) {
   }
 }
 
+
+
+// Define el esquema para validar los datos del menú
+const CreateMenu = z.object({
+  menu_description: z.string().nonempty('Menu description is required.'),
+  menu_servings: z.number().min(1, 'At least one serving is required.'),
+  // Puedes agregar más validaciones si es necesario
+});
+
+// Función para crear un menú
+export async function createMenu(formData: FormData) {
+  // Validar el formulario usando Zod
+  const validatedFields = CreateMenu.safeParse({
+    menu_description: formData.get('menu_description'),
+    menu_servings: Number(formData.get('menu_servings')), // Convertir a número
+  });
+
+  // Si la validación del formulario falla, devuelve los errores
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Create Menu.',
+    };
+  }
+
+  // Preparar datos para la inserción en la base de datos
+  const { menu_description, menu_servings } = validatedFields.data;
+
+  // Inserción en la base de datos
+  try {
+    await sql`
+      INSERT INTO menus (menu_description, menu_servings, menu_creationdate, menu_totalcost)
+      VALUES (
+        UPPER(${menu_description}),
+        ${menu_servings},
+        NOW(),
+        0
+      );
+    `;
+  } catch (error) {
+    console.error('Database Error:', error);
+    return {
+      message: 'Database Error: Failed to Create Menu.',
+    };
+  }
+
+  // Revalidar la caché para la página de menús y redirigir al usuario
+  revalidatePath('/dashboard/menus');
+  redirect('/dashboard/menus');
+}
