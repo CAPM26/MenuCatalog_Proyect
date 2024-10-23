@@ -149,6 +149,12 @@ export type CategoryField = {
 export type SubcategoryField = {
   subcategory_id: string;
   subcategory_description: string;
+  category_id_ref: string;
+};
+
+export type UserField = {
+  id: string;
+  name: string;
 };
 
 //Apartado de objetos del menu 

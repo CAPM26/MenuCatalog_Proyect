@@ -12,6 +12,10 @@ import {
   LatestInvoiceRaw,
   ClientTable,
   Revenue,
+  PresentationField,
+  CategoryField,
+  SubcategoryField,
+  UserField,
 } from './definitions';
 import { formatCurrency } from './utils';
 export const db = sql; // Puedes usar esta exportación en tu data.ts

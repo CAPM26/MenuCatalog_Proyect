@@ -37,7 +37,7 @@
                     </div>
                     <div className="flex justify-end gap-2">
                       <UpdateProduct id={product.product_id} />
-                      <DeleteProduct id={product.product_id} />
+                      {/* <DeleteProduct id={product.product_id} /> */}
                     </div>
                   </div>
                 </div>
