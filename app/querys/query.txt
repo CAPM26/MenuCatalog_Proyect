@@ -16,3 +16,48 @@ JOIN users u ON u.id = pcs.user_id_reference
 WHERE pr.presentation_description = 'botella'
 AND sc.subcategory_description = 'ABARROTES'
 AND c.category_description = 'ABARROTES'
+
+-- Insertar productos en menulistproducts
+INSERT INTO menulistproducts (menu_id_ref, product_id_ref, menulistproduct_quantity)
+VALUES (
+    (SELECT menu_id FROM menus WHERE menu_description = 'menu 1'),
+    (SELECT product_id FROM products WHERE product_description = 'aceite'),
+    2
+);
+
+-- Actualizar el costo total del menú
+UPDATE menus
+SET menu_totalcost = (
+    SELECT SUM(pcs.price_unitprice * mlp.menulistproduct_quantity)
+    FROM menulistproducts mlp
+    JOIN products p ON p.product_id = mlp.product_id_ref
+    JOIN prices pcs ON p.product_id = pcs.product_id_ref
+    WHERE mlp.menu_id_ref = menus.menu_id
+);
+
+-- actualizar desde menu_sideorder
+UPDATE menus
+SET menu_totalcost = menu_totalcost + (
+    SELECT SUM(pcs.price_unitprice)
+    FROM menu_sideorder mso
+    JOIN products p ON p.product_id = mso.product_id_ref
+    JOIN prices pcs ON p.product_id = pcs.product_id_ref
+    WHERE mso.menu_id_ref = menus.menu_id
+);
+
+SELECT
+		  customers.id AS client_id, -- Esto se renombra pero se usará en el mapeo
+      customers.name AS client_name,
+      customers.phone AS client_phone,
+      customers.direction AS client_direction, 
+		  COUNT(invoices.id) AS total_invoices,
+		  SUM(CASE WHEN invoices.status = 'pending' THEN invoices.amount ELSE 0 END) AS total_pending,
+		  SUM(CASE WHEN invoices.status = 'paid' THEN invoices.amount ELSE 0 END) AS total_paid
+		FROM customers
+		LEFT JOIN invoices ON customers.id = invoices.customer_id
+		WHERE
+		  customers.name ILIKE ${`%${query}%`} OR
+        customers.email ILIKE ${`%${query}%`}
+		GROUP BY customers.id, customers.name, customers.email
+		ORDER BY customers.name ASC
+	  `;

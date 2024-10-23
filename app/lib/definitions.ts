@@ -14,6 +14,8 @@ export type Customer = {
   name: string;
   email: string;
   image_url: string;
+
+  
 };
 
 export type Invoice = {
@@ -27,13 +29,14 @@ export type Invoice = {
 };
 
 export type Product = {
-  id: string;
-  customer_id: string;
-  amount: number;
-  date: string;
-  // In TypeScript, this is called a string union type.
-  // It means that the "status" property can only be one of the two strings: 'pending' or 'paid'.
-  status: 'pending' | 'paid';
+  product_id: string;
+  presentation_id: string;
+  category_id: string;
+  subcategory_id: string;
+  user_id: string;
+  product_description: string;
+  price_costprice: number;
+  price_unitprice: number;
 };
 
 export type Revenue = {
@@ -65,21 +68,25 @@ export type InvoicesTable = {
   status: 'pending' | 'paid';
 };
 
+export type ClientTable = {
+client_id: string;
+client_name: string;
+client_phone: string;
+client_direction: string;
+};
+
 export type ProductsTable = {
   product_id: string;
-  presentation_id: string;
-  subcategory_id: string;
-  price_id: string;
-  user_id: string;
-
   presentation_description: string;
   product_description: string;
   price_costprice: number;
   price_unitprice: number;
-  validitydate: string;
   category_description: string;
   subcategory_description: string;
+  name: string;
 };
+
+
 
 export type CustomersTableType = {
   id: string;
@@ -89,6 +96,10 @@ export type CustomersTableType = {
   total_invoices: number;
   total_pending: number;
   total_paid: number;
+  client_id: string;
+  client_name: string;
+  client_phone: string;
+  client_direction: string;
 };
 
 export type FormattedCustomersTable = {
@@ -117,15 +128,28 @@ export type InvoiceForm = {
 export type ProductForm = {
   product_id: string;
   presentation_id: string;
+  category_id: string;
   subcategory_id: string;
-  price_id: string;
-
-  presentation_description: string;
+  id: string;
   product_description: string;
   price_costprice: number;
   price_unitprice: number;
+};
+
+export type PresentationField = {
+  presentation_id: string;
+  presentation_description: string;
+};
+
+export type CategoryField = {
+  category_id: string;
   category_description: string;
+};
+
+export type SubcategoryField = {
+  subcategory_id: string;
   subcategory_description: string;
+<<<<<<< HEAD
 };
 
 //Apartado de objetos del menu 
@@ -163,4 +187,12 @@ export type MenuTable = {
   price_validitydate: string;
   user_name: string;
   menu_id: string;
+=======
+  category_id_ref: string;
+};
+
+export type UserField = {
+  id: string;
+  name: string;
+>>>>>>> 282b9fd01e59e3865ed255f7708aed0dfff377e5
 };
