@@ -23,9 +23,18 @@ const config: Config = {
         },
         dimgray: {
           500: '#312B3B',
-
         },
       },
+      typography: {
+        DEFAULT: {
+          css: {
+            '.breadcrumb-label':{
+              fontWeight: 'bold',
+              color: '#ffffff'
+            }
+          }
+        }
+      }
     },
     keyframes: {
       shimmer: {

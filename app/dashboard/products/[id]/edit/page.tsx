@@ -6,6 +6,7 @@ import { fetchProductById,
     fetchSubcategories, 
     fetchCategories } from '@/app/lib/data';
 import { notFound } from 'next/navigation';
+import { lusitana } from '@/app/ui/fonts';
 
  
 export default async function Page({ params }: { params: { id: string } }) {
@@ -23,16 +24,20 @@ export default async function Page({ params }: { params: { id: string } }) {
       }
   return (
     <main>
+      <div className="w-full h-auto p-4 bg-purple-500">
       <Breadcrumbs
         breadcrumbs={[
-          { label: 'Products', href: '/dashboard/products' },
+          { label: 'Products', href: '/dashboard/products'},
           {
             label: 'Edit Product',
             href: `/dashboard/products/${id}/edit`,
             active: true,
+            
           },
         ]}
       />
+      </div>
+      
       <Form product={product} presentations={presentations} users={users} categories={categories} subcategories={subcategories} />
     </main>
   );
