@@ -247,18 +247,31 @@ export function MenuCardsSkeleton() {
 export function MenuTableRowSkeleton() {
   return (
     <tr className="w-full border-b border-gray-100 last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg">
-      {/* Menu Name */}
-      <td className="relative overflow-hidden whitespace-nowrap py-3 pl-6 pr-3">
-        <div className="flex items-center gap-3">
-          <div className="h-8 w-8 rounded-full bg-gray-100"></div>
-          <div className="h-6 w-24 rounded bg-gray-100"></div>
-        </div>
-      </td>
-      {/* Category */}
+      {/* Product */}
       <td className="whitespace-nowrap px-3 py-3">
         <div className="h-6 w-32 rounded bg-gray-100"></div>
       </td>
-      {/* Price */}
+      {/* Presentation */}
+      <td className="whitespace-nowrap px-3 py-3">
+        <div className="h-6 w-32 rounded bg-gray-100"></div>
+      </td>
+      {/* Subcategory */}
+      <td className="whitespace-nowrap px-3 py-3">
+        <div className="h-6 w-16 rounded bg-gray-100"></div>
+      </td>
+      {/* Category */}
+      <td className="whitespace-nowrap px-3 py-3">
+        <div className="h-6 w-16 rounded bg-gray-100"></div>
+      </td>
+      {/* Quantity */}
+      <td className="whitespace-nowrap px-3 py-3">
+        <div className="h-6 w-32 rounded bg-gray-100"></div>
+      </td>
+      {/* Unitprice */}
+      <td className="whitespace-nowrap px-3 py-3">
+        <div className="h-6 w-32 rounded bg-gray-100"></div>
+      </td>
+      {/* Total price */}
       <td className="whitespace-nowrap px-3 py-3">
         <div className="h-6 w-16 rounded bg-gray-100"></div>
       </td>
@@ -266,7 +279,7 @@ export function MenuTableRowSkeleton() {
       <td className="whitespace-nowrap px-3 py-3">
         <div className="h-6 w-16 rounded bg-gray-100"></div>
       </td>
-      {/* Actions */}
+      {/* Validity Date */}
       <td className="whitespace-nowrap py-3 pl-6 pr-3">
         <div className="flex justify-end gap-3">
           <div className="h-[38px] w-[38px] rounded bg-gray-100"></div>
@@ -285,24 +298,40 @@ export function MenuTableSkeleton() {
           <table className="min-w-full text-gray-900">
             <thead className="rounded-lg text-left text-sm font-normal">
               <tr>
-                <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
-                  Menu
+              <th scope="col" className="px-3 py-5 font-medium">
+                  Product
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Presentation
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Subcategory
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
                   Category
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Price
+                  Quantity
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Date Added
+                  Unit Price
                 </th>
-                <th scope="col" className="relative pb-4 pl-3 pr-6 pt-2 sm:pr-6">
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Total Price
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Validity Date
+                </th>
+                <th scope="col" className="relative py-3 pl-6 pr-3">
                   <span className="sr-only">Actions</span>
                 </th>
               </tr>
             </thead>
             <tbody className="bg-white">
+              <MenuTableRowSkeleton />
+              <MenuTableRowSkeleton />
+              <MenuTableRowSkeleton />
+              <MenuTableRowSkeleton />
               <MenuTableRowSkeleton />
               <MenuTableRowSkeleton />
               <MenuTableRowSkeleton />
@@ -322,7 +351,6 @@ export  function MenuSkeleton() {
         className={`${shimmer} relative mb-4 h-8 w-36 overflow-hidden rounded-md bg-gray-100`}
       />
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        <MenuCardSkeleton />
         <MenuCardSkeleton />
         <MenuCardSkeleton />
         <MenuCardSkeleton />

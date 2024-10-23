@@ -1,11 +1,13 @@
 import { PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
+//import Modal from '@/app/ui/modal'; // Asegúrate de importar el componente Modal
+import React, { useState } from 'react';
 //import { deleteMenu } from '@/app/lib/actions';
 
 export function CreateMenu() {
   return (
     <Link
-      href="/dashboard/menus/create"
+      href="dashboard/menus/create"
       className="flex h-10 items-center rounded-lg bg-green-600 px-4 text-sm font-medium text-white transition-colors hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600"
     >
       <span className="hidden md:block">Create Menu</span>{' '}
@@ -17,7 +19,7 @@ export function CreateMenu() {
 export function UpdateMenu({ id }: { id: string }) {
   return (
     <Link
-      href={`/dashboard/menus/${id}/edit`}
+      href={`dashboard/menus/${id}/edit`}
       className="rounded-md border p-2 hover:bg-gray-100"
     >
       <PencilIcon className="w-5" />
@@ -25,14 +27,14 @@ export function UpdateMenu({ id }: { id: string }) {
   );
 }
 
-////export function DeleteMenu({ id }: { id: string }) {
-//  const deleteMenuWithId = deleteMenu.bind(null, id);
-//  return (
-//    <form action={deleteMenuWithId}>
-//      <button type="submit" className="rounded-md border p-2 hover:bg-gray-100">
-//        <span className="sr-only">Delete</span>
-//        <TrashIcon className="w-4" />
-//      </button>
-//    </form>
-//  );
-//}
+export function DeleteMenu({ id }: { id: string }) {
+  //const deleteMenuWithId = deleteMenu.bind(null, id);
+  //return (
+  //  <form action={deleteMenuWithId}>
+  //    <button type="submit" className="rounded-md border p-2 hover:bg-gray-100">
+  //      <span className="sr-only">Delete</span>
+  //      <TrashIcon className="w-4" />
+  //    </button>
+  //  </form>
+  //);
+}

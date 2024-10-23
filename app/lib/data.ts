@@ -317,7 +317,8 @@ export async function fetchFilteredProductReport(query: string) {
   ((mp.menulistproduct_quantity * pcs.price_unitprice)/100) AS total_price,
   pcs.price_validitydate, 
   u.name AS added_by_user, 
-  m.menu_description 
+  m.menu_description,
+  menu_id 
 FROM products p
 JOIN presentation pr ON pr.presentation_id = p.presentation_id_ref
 JOIN subcategory sc ON sc.subcategory_id = p.subcategory_id_ref
@@ -339,23 +340,7 @@ ORDER BY p.product_description ASC;
 }
 
 export async function fetchMenuPages(query: string) {
- // try {
- //   const count = await sql`SELECT COUNT(*)
- //   FROM menus
- //   WHERE
- //     menus_id ILIKE ${`%${query}%`} OR
- //     menus_servings ILIKE ${`%${query}%`} OR
- //     menus_creationdate::text ILIKE ${`%${query}%`} OR
- //     menus_descripcion ILIKE ${`%${query}%`}
- //   `;
-////
- //   const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
- //   return totalPages;
- // } catch (error) {
- //   console.error('Database Error:', error);
- //   throw new Error('Failed to fetch total number of menu items.');
- //  
-  //}
+  
 }
 
 

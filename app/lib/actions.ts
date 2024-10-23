@@ -139,3 +139,22 @@ export async function authenticate(
     throw error;
   }
 }
+
+export async function createMenu(formData: FormData) {
+  try {
+    const response = await fetch('/api/menus', {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to create menu');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error(error);
+    return { mensage: "error.message" };
+  }
+}
+
