@@ -1,54 +1,84 @@
+'use client';
+
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/app/ui/button';
 import Link from 'next/link';
 import { createMenu } from '@/app/lib/actions';
-import { PresentationField} from '@/app/lib/definitions'
+import { PresentationField, CreateMenuData } from '@/app/lib/definitions';
+import { selectProduct } from '@/app/lib/actions';
 
 export default function CreateMenuForm() {
-  const [products, setProducts] = useState([]); // Asegúrate de que esta sea una lista del tipo correcto
-  const [selectedProduct, setSelectedProduct] = useState('');
-  const [quantity, setQuantity] = useState(1);
+  const [products, setProducts] = useState<{ presentation_id: string; presentation_description: string }[]>([]);
+  const [selectedProducts, setSelectedProducts] = useState<{ product_name: string; quantity: number }[]>([]);
   const [menuDescription, setMenuDescription] = useState('');
   const [errors, setErrors] = useState<string | null>(null);
   const router = useRouter();
 
+  // Cargar lista de productos al montar el componente
   useEffect(() => {
     const fetchProducts = async () => {
-      const response = await fetch('/api/products');
-      if (!response.ok) {
+      try {
+        const productsData = await selectProduct();
+        const plainProducts = productsData.map((product: any) => ({
+          presentation_id: product.presentation_id.toString(), // Asegurarse de que los IDs sean strings
+          presentation_description: product.presentation_description,
+        }));
+        setProducts(plainProducts);
+      } catch (error) {
         setErrors('Failed to load products. Please try again later.');
-        return;
       }
-      const data = await response.json();
-      setProducts(data);
     };
     fetchProducts();
   }, []);
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-  
-    const formData = new FormData(); // Crear una instancia de FormData
-  
-    // Agregar los datos al FormData
-    formData.append('menu_description', menuDescription);
-    formData.append('product_id', selectedProduct);
-    formData.append('menulistproduct_quantity', quantity.toString()); // Convertir a string
-  
-    // Validación de campos obligatorios
-    if (!menuDescription || !selectedProduct || !quantity) {
-      setErrors('All fields are required. Please complete the form.');
+  // Manejar la selección de productos y cantidades
+  const handleProductChange = (productName: string, quantity: number) => {
+    setSelectedProducts((prev) => {
+      const existingProduct = prev.find((p) => p.product_name === productName);
+      if (existingProduct) {
+        // Si el producto ya está seleccionado, actualizar la cantidad
+        return prev.map((p) => 
+          p.product_name === productName ? { ...p, quantity } : p
+        );
+      } else {
+        // Si no está seleccionado, agregarlo a la lista
+        return [...prev, { product_name: productName, quantity }];
+      }
+    });
+  };
+
+  // Manejar el envío del formulario
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!menuDescription) {
+      setErrors("Menu description is required.");
       return;
     }
   
-    const result = await createMenu(formData); // Pasar el FormData a la función
-  
-    if (result && result.errors) {
-      console.error(result.errors);
-    } else {
-      router.push('/dashboard/menus'); // Redirige a la página de menús después de la creación
+    if (selectedProducts.length === 0) {
+      setErrors("You must select at least one product.");
+      return;
     }
+  
+    // Enviar productos uno por uno
+    for (const product of selectedProducts) {
+      const createMenuData: CreateMenuData = {
+        menuDescription,
+        product_name: product.product_name,  // Nombre del producto
+        quantity: product.quantity,  // Cantidad del producto
+      };
+  
+      const result = await createMenu(createMenuData);
+      if (!result.success) {
+        console.error("Error creating menu:", result.error);
+        setErrors("An error occurred while creating the menu. Please try again.");
+        return;
+      }
+    }
+  
+    console.log("Menu created successfully");
+    router.push('/dashboard/menus');
   };
   
 
@@ -79,41 +109,29 @@ export default function CreateMenuForm() {
 
         {/* Selección de Producto */}
         <div className="mb-4">
-          <label htmlFor="product_id" className="mb-2 block text-sm font-medium">
-            Select Product
+          <label className="mb-2 block text-sm font-medium">
+            Select Products
           </label>
-          <select
-            id="product_id"
-            name="product_id"
-            value={selectedProduct}
-            onChange={(e) => setSelectedProduct(e.target.value)}
-            className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm"
-            required
-          >
-            <option value="" disabled>Select a product</option>
-            {products.map((product: PresentationField) => (
-              <option key={product.presentation_id} value={product.presentation_id}>
-                {product.presentation_description} {/* Asumiendo que el precio se almacena en centavos */}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Cantidad */}
-        <div className="mb-4">
-          <label htmlFor="quantity" className="mb-2 block text-sm font-medium">
-            Quantity
-          </label>
-          <input
-            id="quantity"
-            name="quantity"
-            type="number"
-            value={quantity}
-            onChange={(e) => setQuantity(Number(e.target.value))}
-            min="1"
-            className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm"
-            required
-          />
+          {products.map((product) => (
+            <div key={product.presentation_id} className="flex items-center mb-2">
+              <input
+                type="checkbox"
+                id={product.presentation_id}
+                name="product_id"
+                onChange={(e) => handleProductChange(product.presentation_description, e.target.checked ? 1 : 0)}
+              />
+              <label htmlFor={product.presentation_id} className="ml-2">
+                {product.presentation_description}
+              </label>
+              <input
+                type="number"
+                min="1"
+                defaultValue={1}
+                className="ml-2 w-16 border rounded-md"
+                onChange={(e) => handleProductChange(product.presentation_description, Number(e.target.value))}
+              />
+            </div>
+          ))}
         </div>
       </div>
       <div className="mt-6 flex justify-end gap-4">

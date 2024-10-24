@@ -486,50 +486,159 @@ export async function deleteProduct(id: string) {
 
 
 // Define el esquema para validar los datos del menú
-const CreateMenu = z.object({
-  menu_description: z.string().nonempty('Menu description is required.'),
-  menu_servings: z.number().min(1, 'At least one serving is required.'),
-  // Puedes agregar más validaciones si es necesario
-});
+//const CreateMenu = z.object({
+//  menu_description: z.string().nonempty('Menu description is required.'),
+//  menu_servings: z.number().min(1, 'At least one serving is required.'),
+//  // Puedes agregar más validaciones si es necesario
+//});
+//
+//// Función para crear un menú
+//export async function createMenu(formData: FormData) {
+//  // Validar el formulario usando Zod
+//  const validatedFields = CreateMenu.safeParse({
+//    menu_description: formData.get('menu_description'),
+//    menu_servings: Number(formData.get('menu_servings')), // Convertir a número
+//  });
+//
+//  // Si la validación del formulario falla, devuelve los errores
+//  if (!validatedFields.success) {
+//    return {
+//      errors: validatedFields.error.flatten().fieldErrors,
+//      message: 'Missing Fields. Failed to Create Menu.',
+//    };
+//  }
+//
+//  // Preparar datos para la inserción en la base de datos
+//  const { menu_description, menu_servings } = validatedFields.data;
+//
+//  // Inserción en la base de datos
+//  try {
+//    await sql`
+//      INSERT INTO menus (menu_description, menu_servings, menu_creationdate, menu_totalcost)
+//      VALUES (
+//        UPPER(${menu_description}),
+//        ${menu_servings},
+//        NOW(),
+//        0
+//      );
+//    `;
+//  } catch (error) {
+//    console.error('Database Error:', error);
+//    return {
+//      message: 'Database Error: Failed to Create Menu.',
+//    };
+//  }
+//
+//  // Revalidar la caché para la página de menús y redirigir al usuario
+//  revalidatePath('/dashboard/menus');
+//  redirect('/dashboard/menus');
+//}
 
-// Función para crear un menú
-export async function createMenu(formData: FormData) {
-  // Validar el formulario usando Zod
-  const validatedFields = CreateMenu.safeParse({
-    menu_description: formData.get('menu_description'),
-    menu_servings: Number(formData.get('menu_servings')), // Convertir a número
-  });
+//Apartado para el formulario menu
 
-  // Si la validación del formulario falla, devuelve los errores
-  if (!validatedFields.success) {
-    return {
-      errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing Fields. Failed to Create Menu.',
-    };
-  }
+import { PresentationField, CreateMenuData } from '@/app/lib/definitions'; // Importa la estructura de tipo
 
-  // Preparar datos para la inserción en la base de datos
-  const { menu_description, menu_servings } = validatedFields.data;
-
-  // Inserción en la base de datos
+export async function selectProduct(): Promise<PresentationField[]> {
   try {
-    await sql`
-      INSERT INTO menus (menu_description, menu_servings, menu_creationdate, menu_totalcost)
-      VALUES (
-        UPPER(${menu_description}),
-        ${menu_servings},
-        NOW(),
-        0
-      );
+    // Ejecutar la consulta a la base de datos para obtener el ID y la descripción de los productos
+    const products = await sql`
+      SELECT product_id AS presentation_id, product_description AS presentation_description
+      FROM products;
     `;
+
+    // Mapear los productos obtenidos al tipo PresentationField
+    const mappedProducts: PresentationField[] = products.rows.map((product: any) => ({
+      presentation_id: product.presentation_id,
+      presentation_description: product.presentation_description,
+    }));
+
+    // Devolver los productos mapeados
+    return mappedProducts;
   } catch (error) {
     console.error('Database Error:', error);
-    return {
-      message: 'Database Error: Failed to Create Menu.',
-    };
+    return [];
   }
-
-  // Revalidar la caché para la página de menús y redirigir al usuario
-  revalidatePath('/dashboard/menus');
-  redirect('/dashboard/menus');
 }
+
+
+
+//export const createMenu = async (menuDescription: string, products: { product_name: string, quantity: number }[]) => {
+//  try {
+//    // Iniciar transacción
+//    await sql`BEGIN`;
+//
+//    // Insertar el menú y obtener el ID generado
+//    const menuResult = await sql`
+//      INSERT INTO menus (menu_description) 
+//      VALUES (${menuDescription}) 
+//      RETURNING menu_id
+//    `;
+//    const menuId = menuResult.rows[0].menu_id;
+//
+//    // Insertar los productos en la lista del menú
+//    for (const product of products) {
+//      const productResult = await sql`
+//        SELECT product_id 
+//        FROM products 
+//        WHERE product_description = ${product.product_name}
+//      `;
+//      const productId = productResult.rows[0].product_id;
+//
+//      await sql`
+//        INSERT INTO menulistproducts (menu_id_ref, product_id_ref, menulistproduct_quantity) 
+//        VALUES (${menuId}, ${productId}, ${product.quantity})
+//      `;
+//    }
+//
+//    // Finalizar la transacción
+//    await sql`COMMIT`;
+//
+//    return { success: true, menuId };
+//  } catch (error) {
+//    await sql`ROLLBACK`;
+//    console.error('Error creating menu:', error);
+//    return { success: false, error };
+//  }
+//};
+
+export const createMenu = async (data: CreateMenuData) => {
+  try {
+    const { menuDescription, product_name, quantity} = data;
+
+    // Iniciar transacción
+    await sql`BEGIN`;
+
+    // Insertar el menú y obtener el ID generado
+    const menuResult = await sql`
+      INSERT INTO menus (menu_description) 
+      VALUES (${menuDescription}) 
+      RETURNING menu_id
+    `;
+    const menuId = menuResult.rows[0].menu_id;
+
+    // Insertar los productos en la lista del menú
+    for (const product of product_name) {
+      const productResult = await sql`
+        SELECT product_id 
+        FROM products 
+        WHERE product_description = ${product_name}
+      `;
+      const productId = productResult.rows[0].product_id;
+
+      await sql`
+        INSERT INTO menulistproducts (menu_id_ref, product_id_ref, menulistproduct_quantity) 
+        VALUES (${menuId}, ${productId}, ${quantity})
+      `;
+    }
+
+    // Finalizar la transacción
+    await sql`COMMIT`;
+
+    return { success: true, menuId };
+  } catch (error) {
+    await sql`ROLLBACK`;
+    console.error('Error creating menu:', error);
+    return { success: false, error };
+  }
+};
+

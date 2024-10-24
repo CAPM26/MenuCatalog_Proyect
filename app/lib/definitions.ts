@@ -190,7 +190,17 @@ export type MenuTable = {
   category_id_ref: string;
 };
 
+export type CreateMenuData = {
+  menuDescription: string;  // Lista de productos con nombre y cantidad
+  product_name: string;  
+  quantity: number;
+
+};
+
+
 export type UserField = {
   id: string;
   name: string;
 };
+
+
