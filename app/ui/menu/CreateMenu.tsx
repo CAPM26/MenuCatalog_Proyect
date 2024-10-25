@@ -149,32 +149,34 @@ return (
 
       {/* Lista desplegable de productos */}
       {isProductListOpen && (
+        <div className="overflow-y-auto h-60"> {/* Contenedor con scroll */}
         <div className="bg-gray-100 p-4 rounded-md">
-          {products.map((product) => (
-            <div key={product.presentation_id} className="flex items-center mb-2">
-              <input
-                type="checkbox"
-                id={product.presentation_id}
-                name="product_id"
-                onChange={(e) =>
-                  handleProductChange(product.presentation_description, e.target.checked ? 1 : 0)
-                }
-                className="mr-2"
-              />
-              <label htmlFor={product.presentation_id} className="mr-4">
-                {product.presentation_description}
-              </label>
-              <input
-                type="number"
-                min="1"
-                defaultValue={1}
-                className="ml-2 w-16 border rounded-md"
-                onChange={(e) =>
-                  handleProductChange(product.presentation_description, Number(e.target.value))
-                }
-              />
-            </div>
-          ))}
+            {products.map((product) => (
+              <div key={product.presentation_id} className="flex items-center justify-between mb-2">
+                <input
+                  type="checkbox"
+                  id={product.presentation_id}
+                  name="product_id"
+                  onChange={(e) =>
+                    handleProductChange(product.presentation_description, e.target.checked ? 1 : 0)
+                  }
+                  className="mr-2"
+                />
+                <label htmlFor={product.presentation_id} className="mr-4">
+                  {product.presentation_description}
+                </label>
+                <input
+                  type="number"
+                  min="1"
+                  defaultValue={1}
+                  className="ml-4 w-16 border rounded-md"
+                  onChange={(e) =>
+                    handleProductChange(product.presentation_description, Number(e.target.value))
+                  }
+                />
+              </div>
+            ))}
+        </div>
         </div>
       )}
     </div>
