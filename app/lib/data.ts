@@ -487,4 +487,30 @@ export async function fetchUsers() {
 }
 
 
+export async function fetchEstablishments() {
+  try {
+    const establishments = await sql`
+      SELECT client_id, client_name
+      FROM clients
+      ORDER BY client_name ASC;
+    `;
+    return establishments.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch establishments.');
+  }
+}
 
+export async function fetchMenus() {
+  try {
+    const menus = await sql`
+      SELECT menu_id, menu_description
+      FROM menus
+      ORDER BY menu_description ASC;
+    `;
+    return menus.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch menus.');
+  }
+}

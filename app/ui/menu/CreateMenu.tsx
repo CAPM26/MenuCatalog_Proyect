@@ -144,7 +144,7 @@ return (
       <button
         type="button"
         onClick={toggleProductList}
-        className="w-full mb-2 px-4 py-2 bg-blue-500 text-white rounded-md focus:outline-none hover:bg-blue-600"
+        className="w-full mb-2 px-4 py-2 bg-purple-500 text-white rounded-md focus:outline-none hover:bg-purple-400"
       >
         {isProductListOpen ? 'Hide Products' : 'Show Products'}
       </button>

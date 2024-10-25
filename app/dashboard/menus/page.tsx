@@ -27,8 +27,8 @@ export default async function Page({
   return (
     <div className="w-full">
       {/* Contenedor principal centrado */}
-      <div className="flex w-full items-center justify-between">
-        <h1 className={`${lusitana.className} text-2xl`}>Menu Items</h1>
+      <div className="w-full h-auto p-4 bg-purple-500">
+        <h1 className={`${lusitana.className} mb-2 text-4xl font-bold text-center text-white`}>Menu Items</h1>
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
         <Search placeholder="Search menu items..." />
