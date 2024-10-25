@@ -151,7 +151,7 @@ return (
 
       {/* Lista desplegable de productos */}
       {isProductListOpen && (
-        <div className="overflow-y-auto h-60"> {/* Contenedor con scroll */}
+        <div className="overflow-y-auto max-h-[40vh]"> {/* Contenedor con scroll */}
         <div className="bg-gray-100 p-4 rounded-md">
             {products.map((product) => (
               <div key={product.presentation_id} className="flex items-center justify-between mb-2">
