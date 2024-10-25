@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/app/ui/button';
 import Link from 'next/link';
-import { createMenu } from '@/app/lib/actions';
+import { createMenu, linkProductsToMenu } from '@/app/lib/actions';
 import { PresentationField, CreateMenuData } from '@/app/lib/definitions';
 import { selectProduct } from '@/app/lib/actions';
 
@@ -61,25 +61,28 @@ export default function CreateMenuForm() {
       return;
     }
   
-    // Enviar productos uno por uno
-    for (const product of selectedProducts) {
-      const createMenuData: CreateMenuData = {
-        menuDescription,
-        product_name: product.product_name,  // Nombre del producto
-        quantity: product.quantity,  // Cantidad del producto
-      };
+    // Crear el menú primero, pasando sólo la descripción
+    const result = await createMenu(menuDescription);
+    if (!result.success) {
+      setErrors("An error occurred while creating the menu.");
+      return;
+    }
   
-      const result = await createMenu(createMenuData);
-      if (!result.success) {
-        console.error("Error creating menu:", result.error);
-        setErrors("An error occurred while creating the menu. Please try again.");
+    const menuId = result.menuId;
+  
+    // Ahora vincular los productos seleccionados al menú
+    for (const product of selectedProducts) {
+      const productResult = await linkProductsToMenu(menuId, product.product_name, product.quantity);
+      if (!productResult.success) {
+        setErrors("An error occurred while linking products to the menu.");
         return;
       }
     }
   
-    console.log("Menu created successfully");
+    console.log("Menu and products linked successfully");
     router.push('/dashboard/menus');
   };
+  
   
 
   return (

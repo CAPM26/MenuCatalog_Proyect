@@ -601,11 +601,9 @@ export async function selectProduct(): Promise<PresentationField[]> {
 //  }
 //};
 
-export const createMenu = async (data: CreateMenuData) => {
+export const createMenu = async (menuDescription: string) => {
   try {
-    const { menuDescription, product_name, quantity} = data;
-
-    // Iniciar transacción
+    // Iniciar la transacción
     await sql`BEGIN`;
 
     // Insertar el menú y obtener el ID generado
@@ -615,21 +613,6 @@ export const createMenu = async (data: CreateMenuData) => {
       RETURNING menu_id
     `;
     const menuId = menuResult.rows[0].menu_id;
-
-    // Insertar los productos en la lista del menú
-    for (const product of product_name) {
-      const productResult = await sql`
-        SELECT product_id 
-        FROM products 
-        WHERE product_description = ${product_name}
-      `;
-      const productId = productResult.rows[0].product_id;
-
-      await sql`
-        INSERT INTO menulistproducts (menu_id_ref, product_id_ref, menulistproduct_quantity) 
-        VALUES (${menuId}, ${productId}, ${quantity})
-      `;
-    }
 
     // Finalizar la transacción
     await sql`COMMIT`;
@@ -642,3 +625,33 @@ export const createMenu = async (data: CreateMenuData) => {
   }
 };
 
+
+export const linkProductsToMenu = async (menuId: number, product_name: string, quantity: number) => {
+  try {
+    // Iniciar la transacción para vincular el producto
+    await sql`BEGIN`;
+
+    // Obtener el ID del producto a partir de la descripción
+    const productResult = await sql`
+      SELECT product_id 
+      FROM products 
+      WHERE product_description = ${product_name}
+    `;
+    const productId = productResult.rows[0].product_id;
+
+    // Insertar el producto en la lista del menú
+    await sql`
+      INSERT INTO menulistproducts (menu_id_ref, product_id_ref, menulistproduct_quantity) 
+      VALUES (${menuId}, ${productId}, ${quantity})
+    `;
+
+    // Finalizar la transacción
+    await sql`COMMIT`;
+
+    return { success: true };
+  } catch (error) {
+    await sql`ROLLBACK`;
+    console.error('Error linking product to menu:', error);
+    return { success: false, error };
+  }
+};
