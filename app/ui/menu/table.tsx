@@ -51,16 +51,16 @@ export default async function MenuTable({
               <thead className="rounded-lg text-left text-sm font-normal">
                 <tr>
                   <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
+                    Menu
+                  </th>
+                  <th scope="col" className="px-3 py-5 font-medium">
+                    Servings
+                  </th>
+                  <th scope="col" className="px-3 py-5 font-medium">
                     Product
                   </th>
                   <th scope="col" className="px-3 py-5 font-medium">
                     Presentation
-                  </th>
-                  <th scope="col" className="px-3 py-5 font-medium">
-                    Subcategory
-                  </th>
-                  <th scope="col" className="px-3 py-5 font-medium">
-                    Category
                   </th>
                   <th scope="col" className="px-3 py-5 font-medium">
                     Quantity
@@ -86,16 +86,16 @@ export default async function MenuTable({
                     className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
                   >
                     <td className="whitespace-nowrap px-3 py-3">
+                      {item.menu_description}
+                    </td>
+                    <td className="whitespace-nowrap px-3 py-3">
+                      {item.menu_servings}
+                    </td>
+                    <td className="whitespace-nowrap px-3 py-3">
                       {item.product_description}
                     </td>
                     <td className="whitespace-nowrap px-3 py-3">
                       {item.presentation_description}
-                    </td>
-                    <td className="whitespace-nowrap px-3 py-3">
-                      {item.subcategory_description}
-                    </td>
-                    <td className="whitespace-nowrap px-3 py-3">
-                      {item.category_description}
                     </td>
                     <td className="whitespace-nowrap px-3 py-3">
                       {item.menulistproduct_quantity}

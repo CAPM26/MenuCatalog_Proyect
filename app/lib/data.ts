@@ -365,7 +365,8 @@ export async function fetchFilteredProductReport(query: string) {
   u.name AS added_by_user, 
   m.menu_description,
   m.menu_id, 
-  p.product_id
+  p.product_id,
+  m.menu_servings
 FROM products p
 JOIN presentation pr ON pr.presentation_id = p.presentation_id_ref
 JOIN subcategory sc ON sc.subcategory_id = p.subcategory_id_ref
