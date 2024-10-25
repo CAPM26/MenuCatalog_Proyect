@@ -299,16 +299,16 @@ export function MenuTableSkeleton() {
             <thead className="rounded-lg text-left text-sm font-normal">
               <tr>
               <th scope="col" className="px-3 py-5 font-medium">
+                  Menu
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Servings
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
                   Product
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
                   Presentation
-                </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Subcategory
-                </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Category
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
                   Quantity

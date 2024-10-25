@@ -351,6 +351,7 @@ export async function fetchProductById(id: string) {
 }
 
 //estructurar mejor el query para que funcione
+
 export async function fetchFilteredProductReport(query: string) {
   try {
     const menuReport = await sql<MenuTable>`SELECT 
@@ -364,7 +365,9 @@ export async function fetchFilteredProductReport(query: string) {
   pcs.price_validitydate, 
   u.name AS added_by_user, 
   m.menu_description,
-  menu_id 
+  m.menu_id, 
+  p.product_id,
+  m.menu_servings
 FROM products p
 JOIN presentation pr ON pr.presentation_id = p.presentation_id_ref
 JOIN subcategory sc ON sc.subcategory_id = p.subcategory_id_ref
@@ -385,9 +388,6 @@ ORDER BY p.product_description ASC;
   }
 }
 
-export async function fetchMenuPages(query: string) {
-  
-}
 
 
 
@@ -404,7 +404,6 @@ export async function fetchClientById(id: string): Promise<ClientTable | null> {
   return client;
 }
 
-// app/lib/data.ts
 
 export async function fetchCustomerById(id: string): Promise<ClientTable | null> {
   const response = await fetch(`/api/customers/${id}`);
