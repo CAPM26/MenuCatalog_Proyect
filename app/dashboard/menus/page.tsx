@@ -1,11 +1,11 @@
-import Pagination from '@/app/ui/menu/pagination';
+import Pagination from '@/app/ui/invoices/pagination';
 import Search from '@/app/ui/search';
 import MenuTable from '@/app/ui/menu/table';
 import { CreateMenu } from '@/app/ui/menu/buttons';
 import { lusitana } from '@/app/ui/fonts';
 import { Suspense } from 'react';
 import { MenuTableSkeleton } from '@/app/ui/skeletons';
-import { fetchMenuPages } from '@/app/lib/data';
+
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -23,7 +23,7 @@ export default async function Page({
   const query = searchParams?.query || '';
   const currentPage = Number(searchParams?.page) || 1;
 
-  const totalPages = await fetchMenuPages(query);
+  //const totalPages = await countFilteredProducts(query);
 
   return (
     <div className="w-full">

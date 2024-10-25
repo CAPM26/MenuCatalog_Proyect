@@ -187,6 +187,7 @@ export type MenuTable = {
   price_validitydate: string;
   user_name: string;
   menu_id: string;
+  product_id: string;
   category_id_ref: string;
 };
 

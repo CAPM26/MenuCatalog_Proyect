@@ -1,6 +1,6 @@
 import { PencilIcon, PlusIcon, TrashIcon, MinusCircleIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
-import { deleteProduct } from '@/app/lib/actions';
+import { removeProductFromMenu } from '@/app/lib/actions'; 
 
 export function CreateMenu() {
   return (
@@ -27,14 +27,22 @@ export function UpdateProduct({ id }: { id: string }) {
   );
 }
 
-export function DeleteProduct({ id }: { id: string }) {
-  const deleteProductWithId = deleteProduct.bind(null, id);
+interface DeleteProductProps {
+  menuId: string;  
+  productId: string; 
+}
+
+export function DeleteProductM({ menuId, productId }: DeleteProductProps) {
+    const DeletedPM = removeProductFromMenu.bind(null, menuId, productId);
   return (
-    <form action={deleteProductWithId}>
-      <button type="submit" className="rounded-md border p-2 hover:bg-gray-100">
-        <span className="sr-only">Delete</span>
-        <MinusCircleIcon className="w-4" />
+    <form action={DeletedPM}> 
+      <button type='submit' className="rounded-md border p-2 hover:bg-gray-100">
+      <span className="sr-only">Delete</span>
+      <TrashIcon className="w-4" />
       </button>
     </form>
+
   );
 }
+
+
