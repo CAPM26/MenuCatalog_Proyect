@@ -4,10 +4,10 @@ import { DeleteProductM } from './buttons';
 
 export default async function MenuTable({
   query,
-  currentPage,
+  
 }: {
   query: string;
-  currentPage: number;
+  
 }) {
   // Ajusta la función para incluir paginación
 
@@ -38,12 +38,15 @@ export default async function MenuTable({
                     </p>
                     <p>{formatDateToLocal(item.price_validitydate)}</p>
                   </div>
+                  <div className="flex justify-end gap-2">  
+                      <DeleteProductM menuId={item.menu_id} productId={item.product_id}/>
+                    </div>
                 </div>
               </div>
             ))}
           </div>
 
-          <div className="overflow-y-auto h-60"> {/* Contenedor con scroll */}
+          <div className="overflow-y-auto max-h-[75vh]"> {/* Contenedor con scroll */}
             <table className="hidden min-w-full text-gray-900 md:table">
               <thead className="rounded-lg text-left text-sm font-normal">
                 <tr>

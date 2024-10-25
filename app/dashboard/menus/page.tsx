@@ -1,11 +1,10 @@
-import Pagination from '@/app/ui/invoices/pagination';
+//import Pagination from '@/app/ui/invoices/pagination';
 import Search from '@/app/ui/search';
 import MenuTable from '@/app/ui/menu/table';
 import { CreateMenu } from '@/app/ui/menu/buttons';
 import { lusitana } from '@/app/ui/fonts';
 import { Suspense } from 'react';
 import { MenuTableSkeleton } from '@/app/ui/skeletons';
-
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -23,10 +22,9 @@ export default async function Page({
   const query = searchParams?.query || '';
   const currentPage = Number(searchParams?.page) || 1;
 
-  //const totalPages = await countFilteredProducts(query);
-
   return (
     <div className="w-full">
+      {/* Contenedor principal centrado */}
       <div className="flex w-full items-center justify-between">
         <h1 className={`${lusitana.className} text-2xl`}>Menu Items</h1>
       </div>
@@ -34,12 +32,18 @@ export default async function Page({
         <Search placeholder="Search menu items..." />
         <CreateMenu />
       </div>
-      <Suspense key={query + currentPage} fallback={<MenuTableSkeleton />}>
-        <MenuTable query={query} currentPage={currentPage} />
-      </Suspense>
+      
+      {/* Contenedor con scroll solo para el área de la tabla */}
+      <div>
+        <Suspense key={query + currentPage} fallback={<MenuTableSkeleton />}>
+          <MenuTable query={query} />
+        </Suspense>
+      </div>
+      
       <div className="mt-5 flex w-full justify-center">
         {/*<Pagination totalPages={totalPages} />*/}
       </div>
     </div>
   );
 }
+
