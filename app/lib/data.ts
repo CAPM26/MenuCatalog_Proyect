@@ -12,10 +12,12 @@ import {
   LatestInvoiceRaw,
   ClientTable,
   Revenue,
+  MenuTable,
   PresentationField,
   CategoryField,
   SubcategoryField,
   UserField,
+  
 } from './definitions';
 import { formatCurrency } from './utils';
 export const db = sql; // Puedes usar esta exportación en tu data.ts
@@ -348,6 +350,43 @@ export async function fetchProductById(id: string) {
   }
 }
 
+
+export async function fetchFilteredProductReport(query: string) {
+  try {
+    const menuReport = await sql<MenuTable>`SELECT 
+  p.product_description, 
+  pr.presentation_description, 
+  sc.subcategory_description, 
+  c.category_description, 
+  mp.menulistproduct_quantity,
+  pcs.price_unitprice / 100 AS unitprice, 
+  ((mp.menulistproduct_quantity * pcs.price_unitprice)/100) AS total_price,
+  pcs.price_validitydate, 
+  u.name AS added_by_user, 
+  m.menu_description,
+  m.menu_id, 
+  p.product_id
+FROM products p
+JOIN presentation pr ON pr.presentation_id = p.presentation_id_ref
+JOIN subcategory sc ON sc.subcategory_id = p.subcategory_id_ref
+JOIN category c ON c.category_id = sc.category_id_ref
+JOIN prices pcs ON p.product_id = pcs.product_id_ref
+JOIN users u ON u.id = pcs.user_id_ref
+JOIN menulistproducts mp ON mp.product_id_ref = p.product_id 
+JOIN menus m ON m.menu_id = mp.menu_id_ref
+WHERE 
+    m.menu_description ILIKE ${`%${query}%`}
+ORDER BY p.product_description ASC;
+    `;
+
+    return menuReport.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch product report.');
+  }
+}
+
+
 export async function fetchClientById(id: string): Promise<ClientTable | null> {
   const result = await sql`SELECT * FROM clients WHERE client_id = ${id}`;
 
@@ -361,7 +400,6 @@ export async function fetchClientById(id: string): Promise<ClientTable | null> {
   return client;
 }
 
-// app/lib/data.ts
 
 export async function fetchCustomerById(id: string): Promise<ClientTable | null> {
   const response = await fetch(`/api/customers/${id}`);
@@ -443,3 +481,5 @@ export async function fetchUsers() {
     throw new Error('Failed to fetch all users.');
   }
 }
+
+

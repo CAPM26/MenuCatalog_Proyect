@@ -1,17 +1,16 @@
-import Pagination from '@/app/ui/invoices/pagination';
+//import Pagination from '@/app/ui/invoices/pagination';
 import Search from '@/app/ui/search';
-import Table from '@/app/ui/products/table'; /////////////////////////////////////////////////////////
-import { CreateInvoice } from '@/app/ui/invoices/buttons';
-import { lusitana } from '@/app/ui/fonts'; /////////////////////////////////////////////////////////////
+import MenuTable from '@/app/ui/menu/table';
+import { CreateMenu } from '@/app/ui/menu/buttons';
+import { lusitana } from '@/app/ui/fonts';
 import { Suspense } from 'react';
-import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
-import { fetchInvoicesPages } from '@/app/lib/data';
-import { Metadata } from 'next'; ////////////////////////////////////////////////////////////////////
- 
+import { MenuTableSkeleton } from '@/app/ui/skeletons';
+import { Metadata } from 'next';
+
 export const metadata: Metadata = {
-  title: 'Products',
+  title: 'Menu Items',
 };
- 
+
 export default async function Page({
   searchParams,
 }: {
@@ -23,22 +22,26 @@ export default async function Page({
   const query = searchParams?.query || '';
   const currentPage = Number(searchParams?.page) || 1;
 
-  const totalPages = await fetchInvoicesPages(query);
- 
   return (
     <div className="w-full">
+      {/* Contenedor principal centrado */}
       <div className="flex w-full items-center justify-between">
-        <h1 className={`${lusitana.className} text-2xl`}>Products</h1>
+        <h1 className={`${lusitana.className} text-2xl`}>Menu Items</h1>
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
-        <Search placeholder="Search products..." />
-        <CreateInvoice />
+        <Search placeholder="Search menu items..." />
+        <CreateMenu />
       </div>
-      <Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
-        <Table query={query} currentPage={currentPage} />
-      </Suspense>
+      
+      {/* Contenedor con scroll solo para el área de la tabla */}
+      <div>
+        <Suspense key={query + currentPage} fallback={<MenuTableSkeleton />}>
+          <MenuTable query={query} />
+        </Suspense>
+      </div>
+      
       <div className="mt-5 flex w-full justify-center">
-        <Pagination totalPages={totalPages} />
+        {/*<Pagination totalPages={totalPages} />*/}
       </div>
     </div>
   );
