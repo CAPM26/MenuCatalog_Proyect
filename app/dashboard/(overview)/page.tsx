@@ -10,17 +10,21 @@ import { RevenueChartSkeleton,
          CardsSkeleton,
        } from '@/app/ui/skeletons';
 import { fetchFilteredClients } from '@/app/lib/data';
+import MenuTable from '@/app/ui/menu/table';
+import { MenuTableSkeleton } from '@/app/ui/skeletons';
 
-export default async function Page() {
-  // const revenue = await fetchRevenue();
-  // const latestInvoices = await fetchLatestInvoices();
-  const {
-    // numberOfInvoices,
-    // numberOfCustomers,
-    // totalPaidInvoices,
-    // totalPendingInvoices,
-  } = await fetchCardData();
 
+
+export default async function Page({
+  searchParams,
+}: {
+  searchParams?: {
+    query?: string;
+    page?: string;
+  };
+}) {
+  const query = searchParams?.query || '';
+  const currentPage = Number(searchParams?.page) || 1;
   
   const menus = await fetchMenus(); // Obtener los menús
   const establishments = await fetchEstablishments();
@@ -69,6 +73,12 @@ export default async function Page() {
         >
           Ver menú
         </button>
+        
+      </div>
+      <div>
+        <Suspense key={query + currentPage} fallback={<MenuTableSkeleton />}>
+          <MenuTable query={query} />
+        </Suspense>
       </div>
 
     </main>
