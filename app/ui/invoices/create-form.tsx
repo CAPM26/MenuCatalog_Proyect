@@ -9,11 +9,13 @@ import {
 } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
 import { createInvoice, State } from '@/app/lib/actions';
-import { useActionState } from 'react';
+// CORRECCIÓN: Usar useFormState, que es el nombre tipado correcto en React 18
+import { useFormState } from 'react-dom';
 
 export default function Form({ customers }: { customers: CustomerField[] }) {
   const initialState: State = { message: null, errors: {} };
-  const [state, formAction] = useActionState(createInvoice, initialState);
+  // CORRECCIÓN: Usar useFormState en la llamada
+  const [state, formAction] = useFormState(createInvoice, initialState);
   return (
     <form action={formAction}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
@@ -120,7 +122,7 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
         >
           Cancel
         </Link>
-        <Button type="submit">Create Invoice</Button>
+        <Button type="submit">Create New Invoice</Button>
       </div>
     </form>
   );
